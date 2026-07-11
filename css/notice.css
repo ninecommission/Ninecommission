@@ -1,0 +1,31 @@
+.notice-list {
+  display: grid;
+  gap: 12px;
+}
+
+.notice-list article {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 20px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.notice-list h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.notice-list p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.notice-list time {
+  color: var(--blue);
+  font-weight: 900;
+}

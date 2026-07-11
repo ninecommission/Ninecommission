@@ -1,0 +1,75 @@
+.inquiry-panel,
+.faq-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.inquiry-form {
+  display: grid;
+  gap: 14px;
+}
+
+.inquiry-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.inquiry-form input,
+.inquiry-form textarea {
+  width: 100%;
+  border: 1px solid #c9d7fb;
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--ink);
+  background: #f8fbff;
+  font: inherit;
+}
+
+.inquiry-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.inquiry-form input::placeholder,
+.inquiry-form textarea::placeholder {
+  color: var(--muted);
+}
+
+.inquiry-form .primary-button {
+  width: fit-content;
+  min-width: 140px;
+  border: 0;
+  padding: 0 20px;
+  cursor: pointer;
+}
+
+.faq-list {
+  display: grid;
+  gap: 14px;
+}
+
+.faq-list article {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+.faq-list article:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.faq-list h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.faq-list p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>갤러리 | NINE Commission</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/gallery.css" />
+</head>
+<body>
+  <main class="layout">
+    <section class="main-column">
+      <section class="page-panel gallery-filter-panel">
+        <header class="page-title">
+          <h1>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 9.7 9.7 3 12l6.7 2.3L12 21l2.3-6.7L21 12l-6.7-2.3z"></path>
+            </svg>
+            갤러리
+          </h1>
+          <p>커미션 타입별 작업 샘플을 모아둔 페이지입니다.</p>
+        </header>
+        <div class="filter-row" aria-label="갤러리 필터">
+          <button class="active" type="button" data-filter="all">전체</button>
+          <button type="button" data-filter="sd">SD</button>
+          <button type="button" data-filter="ld">LD</button>
+          <button type="button" data-filter="extra">추가</button>
+        </div>
+      </section>
+
+      <section class="sample-grid gallery-grid" aria-label="작업 샘플 목록">
+        <article class="sample-card gallery-item" data-type="sd" data-title="SD 아이콘" data-price="10,000원" data-desc="SD 타입의 아이콘 샘플입니다. 1:1 비율과 단순 배경에 적합합니다.">
+          <button class="gallery-open" type="button" aria-label="SD 아이콘 샘플 크게 보기"><div class="sample-image sample-1"></div><div class="sample-info"><strong>아이콘</strong><span>10,000원</span><p>SD, 1:1, 단순 배경</p></div></button>
+        </article>
+        <article class="sample-card gallery-item" data-type="sd" data-title="SD 두상" data-price="10,000원" data-desc="SD 타입의 두상 샘플입니다. 작고 귀여운 비율로 표현합니다.">
+          <button class="gallery-open" type="button" aria-label="SD 두상 샘플 크게 보기"><div class="sample-image sample-2"></div><div class="sample-info"><strong>두상</strong><span>10,000원</span><p>SD, 두상, 기본 보정</p></div></button>
+        </article>
+        <article class="sample-card gallery-item" data-type="sd" data-title="SD 전신" data-price="18,000원" data-desc="SD 타입의 전신 샘플입니다. 작은 비율의 전신 캐릭터에 적합합니다.">
+          <button class="gallery-open" type="button" aria-label="SD 전신 샘플 크게 보기"><div class="sample-image sample-4"></div><div class="sample-info"><strong>전신</strong><span>18,000원</span><p>SD, 전신, 단순 배경</p></div></button>
+        </article>
+        <article class="sample-card gallery-item" data-type="ld" data-title="LD 두상" data-price="20,000원" data-desc="LD 타입의 두상 샘플입니다. 캐릭터 얼굴과 분위기를 중심으로 작업합니다.">
+          <button class="gallery-open" type="button" aria-label="LD 두상 샘플 크게 보기"><div class="sample-image sample-2"></div><div class="sample-info"><strong>두상</strong><span>20,000원</span><p>LD, 두상, 기본 보정</p></div></button>
+        </article>
+        <article class="sample-card gallery-item" data-type="ld" data-title="LD 반신" data-price="30,000원" data-desc="LD 타입의 반신 샘플입니다. 상반신 기준으로 캐릭터를 표현합니다.">
+          <button class="gallery-open" type="button" aria-label="LD 반신 샘플 크게 보기"><div class="sample-image sample-3"></div><div class="sample-info"><strong>반신</strong><span>30,000원</span><p>LD, 반신, 기본 보정</p></div></button>
+        </article>
+        <article class="sample-card gallery-item" data-type="ld" data-title="LD 전신" data-price="40,000원" data-desc="LD 타입의 전신 샘플입니다. 의상 디테일에 따라 추가금이 발생할 수 있습니다.">
+          <button class="gallery-open" type="button" aria-label="LD 전신 샘플 크게 보기"><div class="sample-image sample-4"></div><div class="sample-info"><strong>전신</strong><span>40,000원</span><p>LD, 전신, 간단 배경</p></div></button>
+        </article>
+        <article class="sample-card gallery-item" data-type="extra" data-title="배경 추가" data-price="상담" data-desc="소품이나 간단 배경이 포함된 샘플입니다. 배경 범위에 따라 상담이 필요합니다.">
+          <button class="gallery-open" type="button" aria-label="배경 추가 샘플 크게 보기"><div class="sample-image sample-3"></div><div class="sample-info"><strong>배경 추가</strong><span>상담</span><p>소품, 간단 배경, 별도 문의</p></div></button>
+        </article>
+        <article class="sample-card gallery-item" data-type="extra" data-title="디자인 추가" data-price="상담" data-desc="어려운 의상이나 악세사리가 많을 시 추가해주세요. 자료 확인 후 추가 견적을 안내드립니다.">
+          <button class="gallery-open" type="button" aria-label="디자인 추가 샘플 크게 보기"><div class="sample-image sample-1"></div><div class="sample-info"><strong>디자인 추가</strong><span>상담</span><p>어려운 의상이나 악세사리가 많을 시 추가해주세요.</p></div></button>
+        </article>
+      </section>
+    </section>
+
+    <aside class="side-column">
+      <section class="profile-card">
+        <div class="profile-top"><div class="avatar"></div><div><h2>NINE</h2></div></div>
+        <nav class="side-menu" aria-label="주요 메뉴">
+          <a href="index.html"><span><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span>홈</a>
+          <a class="active" href="gallery.html"><span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg></span>갤러리</a>
+          <a href="guide.html"><span><svg viewBox="0 0 24 24"><path d="M10.3 21a2 2 0 0 0 3.4 0"></path><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path></svg></span>커미션 안내</a>
+          <a href="notice.html"><span><svg viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 13z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg></span>공지사항</a>
+          <a href="apply.html"><span><svg viewBox="0 0 24 24"><path d="M9 5h6"></path><path d="M9 3h6v4H9z"></path><path d="M5 5h14v16H5z"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span>커미션 신청</a>
+          <a href="contact.html"><span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>문의하기</a>
+        </nav>
+      </section>
+      <section class="status-card"><div class="status-top"><h2>커미션 슬롯</h2><span>OPEN</span></div><strong>2 / 4</strong><div class="progress"><span></span></div><p>평균 작업 기간 <b>5 ~ 7일</b></p></section>
+      <section class="contact-card"><div class="contact-links" aria-label="연락 수단"><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nine9commission@gmail.com&su=커미션 문의" target="_blank" rel="noopener" aria-label="메일"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></a><a href="#" aria-label="SNS"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"></path><path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.1-1.1"></path></svg></a><a href="https://open.kakao.com/me/commi9nine" target="_blank" rel="noopener" aria-label="카카오톡"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.3 9.4 9.4 0 0 1-3.4-.6L3 21l1.8-4.5A7.7 7.7 0 0 1 3 11.5a8.5 8.5 0 0 1 9-8.3 8.5 8.5 0 0 1 9 8.3"></path></svg></a></div><a class="primary-button" href="apply.html">커미션 신청하기</a><a class="secondary-button" href="status.html">진행 상황 조회</a></section>
+    </aside>
+  </main>
+
+  <div class="gallery-modal" hidden>
+    <div class="gallery-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" type="button" aria-label="닫기">x</button>
+      <button class="modal-nav modal-prev" type="button" aria-label="이전 샘플">&lt;</button>
+      <div class="modal-art" aria-hidden="true"></div>
+      <section class="modal-detail"><p class="modal-count"></p><h2 id="modal-title"></h2><strong class="modal-price"></strong><p class="modal-desc"></p></section>
+      <button class="modal-nav modal-next" type="button" aria-label="다음 샘플">&gt;</button>
+    </div>
+  </div>
+
+  <script src="gallery.js?v=3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase-app.js"></script>
+  <script src="chat.js?v=20260712-reset"></script>
+</body>
+</html>
