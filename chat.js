@@ -179,7 +179,7 @@
     });
 
     renderMessages();
-    setOpen(isHomePage() || readStorage(OPEN_KEY) !== "0");
+    setOpen(false);
   }
 
   if (document.readyState === "loading") {
