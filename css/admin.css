@@ -22,6 +22,14 @@ body {
   background: var(--bg);
 }
 
+body[data-admin-page] {
+  visibility: hidden;
+}
+
+body[data-admin-page].admin-authenticated {
+  visibility: visible;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -47,7 +55,7 @@ svg {
   display: flex;
   flex-direction: column;
   width: 250px;
-  padding: 112px 24px 28px;
+  padding: 30px 20px 24px;
   color: white;
   background:
     radial-gradient(circle at 70% 8%, rgba(72, 118, 255, 0.2), transparent 28%),
@@ -55,14 +63,74 @@ svg {
 }
 
 .admin-sidebar h1 {
-  margin: 0 0 26px;
-  padding-left: 38px;
-  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 4px 28px;
+  padding: 0 10px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 22px;
+  letter-spacing: 0.04em;
+}
+
+.admin-sidebar h1::before {
+  content: "N";
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  color: white;
+  font-size: 17px;
+  background: linear-gradient(145deg, #5687ff, #315fd1);
+  box-shadow: 0 8px 20px rgba(18, 54, 143, 0.3);
+}
+
+.admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 0 4px 28px;
+  padding: 0 10px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.admin-profile-avatar {
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  border: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 36%, #fff4f8 0 14px, transparent 15px),
+    linear-gradient(145deg, #dce8ff, #789fff);
+  background-position: center;
+  background-size: cover;
+  image-rendering: auto;
+  box-shadow: 0 8px 22px rgba(8, 22, 47, 0.3);
+}
+
+.admin-profile > div:last-child {
+  display: grid;
+  gap: 3px;
+}
+
+.admin-profile small {
+  color: #91a9d4;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.admin-profile strong {
+  color: white;
+  font-size: 22px;
 }
 
 .admin-menu {
   display: grid;
-  gap: 12px;
+  gap: 7px;
 }
 
 .admin-menu a,
@@ -71,8 +139,8 @@ svg {
   grid-template-columns: 24px 1fr;
   align-items: center;
   gap: 13px;
-  min-height: 54px;
-  padding: 0 18px;
+  min-height: 50px;
+  padding: 0 16px;
   border-radius: 9px;
   color: #e7eeff;
   font-size: 16px;
@@ -88,6 +156,14 @@ svg {
 
 .logout-link {
   margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  color: #b9c8e8;
+}
+
+.logout-link:hover {
+  color: white;
 }
 
 .admin-main {
@@ -115,7 +191,8 @@ svg {
   display: grid;
   grid-template-columns: 1fr 340px;
   align-items: center;
-  min-height: 254px;
+  min-height: 172px;
+  height: 172px;
   padding: 28px 40px;
   overflow: hidden;
   background:
@@ -137,13 +214,13 @@ svg {
 
 .hero-illustration {
   position: relative;
-  min-height: 210px;
+  min-height: 150px;
 }
 
 .desk {
   position: absolute;
   right: 10px;
-  bottom: 16px;
+  bottom: 4px;
   width: 260px;
   height: 58px;
   border-radius: 50%;
@@ -152,10 +229,10 @@ svg {
 
 .admin-character {
   position: absolute;
-  left: 58px;
-  bottom: 34px;
-  width: 150px;
-  height: 170px;
+  left: 72px;
+  bottom: 12px;
+  width: 124px;
+  height: 138px;
   border-radius: 78px 78px 18px 18px;
   background:
     radial-gradient(circle at 50% 31%, #fff7f8 0 34px, transparent 35px),
@@ -168,7 +245,7 @@ svg {
 .plant {
   position: absolute;
   right: 44px;
-  bottom: 50px;
+  bottom: 22px;
   width: 58px;
   height: 88px;
   border-radius: 0 0 18px 18px;
@@ -182,6 +259,49 @@ svg {
 .quick-card {
   grid-column: span 5;
   padding: 24px;
+}
+
+.site-view-card {
+  display: grid;
+  place-items: center;
+}
+
+.site-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+  min-height: 172px;
+  border: 1px solid #cbd8fb;
+  border-radius: 10px;
+  color: #315bba;
+  background: linear-gradient(135deg, #f5f8ff, #e8efff);
+  box-shadow: 0 10px 24px rgba(35, 82, 202, 0.08);
+}
+
+.dashboard-site-button {
+  grid-column: span 5;
+  align-self: center;
+  min-height: 172px;
+}
+
+.site-view-button svg {
+  width: 34px;
+  height: 34px;
+}
+
+.site-view-button span {
+  display: grid;
+  gap: 5px;
+}
+
+.site-view-button strong {
+  font-size: 20px;
+}
+
+.site-view-button small {
+  color: #7184ad;
 }
 
 .quick-card h2,
@@ -481,7 +601,8 @@ td:first-child {
   margin-bottom: 10px;
 }
 
-.gallery-admin button {
+.gallery-admin button,
+.gallery-upload-link {
   display: grid;
   place-items: center;
   min-height: 112px;
@@ -492,7 +613,8 @@ td:first-child {
   background: white;
 }
 
-.gallery-admin button span {
+.gallery-admin button span,
+.gallery-upload-link span {
   font-size: 14px;
 }
 
@@ -543,6 +665,7 @@ td:first-child {
 
   .hero-card,
   .quick-card,
+  .dashboard-site-button,
   .requests-panel,
   .progress-panel,
   .gallery-admin {
@@ -565,6 +688,7 @@ td:first-child {
 
   .hero-card,
   .quick-card,
+  .dashboard-site-button,
   .metric-card,
   .panel,
   .notice-panel,

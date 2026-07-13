@@ -1,5 +1,5 @@
 const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
-const allItems = Array.from(document.querySelectorAll(".gallery-item"));
+let allItems = Array.from(document.querySelectorAll(".gallery-item"));
 const modal = document.querySelector(".gallery-modal");
 const modalArt = document.querySelector(".modal-art");
 const modalTitle = document.querySelector("#modal-title");
@@ -59,11 +59,15 @@ filterButtons.forEach((button) => {
   button.addEventListener("click", () => setFilter(button.dataset.filter));
 });
 
-allItems.forEach((item) => {
-  item.querySelector(".gallery-open").addEventListener("click", () => {
-    openModal(visibleItems.indexOf(item));
-  });
+document.querySelector(".gallery-grid")?.addEventListener("click", (event) => {
+  const item = event.target.closest(".gallery-item");
+  if (item) openModal(visibleItems.indexOf(item));
 });
+
+window.NineGalleryRefresh = function () {
+  allItems = Array.from(document.querySelectorAll(".gallery-item"));
+  setFilter(document.querySelector("[data-filter].active")?.dataset.filter || "all");
+};
 
 const activeFilter = document.querySelector("[data-filter].active")?.dataset.filter;
 if (activeFilter) setFilter(activeFilter);

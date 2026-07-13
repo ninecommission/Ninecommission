@@ -42,6 +42,7 @@ a {
   margin: 18px auto;
 }
 
+
 .main-column,
 .side-column {
   min-width: 0;
@@ -139,11 +140,12 @@ a {
 }
 
 .avatar {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   margin: 0;
-  border: 5px solid var(--blue-soft);
+  border: 0;
   border-radius: 999px;
+  image-rendering: auto;
   background:
     radial-gradient(circle at 50% 36%, #fff1f6 0 17px, transparent 18px),
     linear-gradient(145deg, #2658d7, #aac7ff);
@@ -152,11 +154,12 @@ a {
 .profile-top {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   margin-bottom: 26px;
 }
 
 .profile-top h2 {
+  font-size: 21px;
   line-height: 1.1;
 }
 
@@ -217,24 +220,36 @@ a {
   gap: 12px;
 }
 
+.status-card .status-top span {
+  visibility: hidden;
+}
+
+.status-card.is-ready .status-top span {
+  visibility: visible;
+}
+
 .status-top span {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 0;
-  border: 0;
-  color: var(--ink);
+  justify-content: center;
+  min-width: 88px;
+  padding: 6px 10px;
+  border: 1px solid #dbe9ff;
+  border-radius: 8px;
+  color: var(--blue);
   font-size: 14px;
   font-weight: 900;
-  background: transparent;
+  background: #eef5ff;
 }
 
 .status-top span::before {
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  background: #43c982;
-  content: "";
+  content: none;
+}
+
+.status-top span.status-preparing {
+  border-color: #f5dfbd;
+  color: #b66a16;
+  background: #fff6e8;
 }
 
 .status-card strong {
@@ -255,7 +270,7 @@ a {
 
 .progress span {
   display: block;
-  width: 50%;
+  width: 0;
   height: 100%;
   border-radius: inherit;
   background: var(--blue);
@@ -438,7 +453,7 @@ a {
 .chat-avatar {
   width: 44px;
   height: 44px;
-  border: 4px solid rgba(255, 255, 255, 0.86);
+  border: 2px solid rgba(255, 255, 255, 0.86);
   border-radius: 999px;
   /* 채팅창 안의 작은 프로필 이미지 자리입니다. */
   background:

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>채팅 관리 | Nine</title>
+  <link rel="stylesheet" href="css/admin-pages.css">
+</head>
+<body data-admin-page="chats">
+  <aside class="admin-sidebar" data-admin-sidebar></aside>
+  <main class="admin-main admin-page">
+    <header class="page-header">
+      <div><h2>채팅 관리</h2><p>홈페이지 채팅으로 접수된 문의 내용을 확인합니다.</p></div>
+      <div class="page-actions"><button class="admin-button danger" data-clear-chats>전체 채팅 삭제</button></div>
+    </header>
+    <section class="content-card">
+      <div class="toolbar"><input data-table-search type="search" placeholder="메시지 또는 접수 페이지 검색"></div>
+      <div class="chat-manage-list" data-chat-list></div>
+      <p class="empty-state" data-chat-empty>저장된 채팅 문의가 없습니다.</p>
+    </section>
+  </main>
+  <div class="toast" data-toast></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase-app.js"></script>
+  <script src="js/admin-pages.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-data.js"></script>
+</body>
+</html>

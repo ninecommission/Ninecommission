@@ -1,5 +1,6 @@
 .commission-guide {
   display: grid;
+  min-width: 0;
   gap: 22px;
   padding: 24px 22px 28px;
 }
@@ -31,6 +32,7 @@
 }
 
 .guide-section-panel {
+  min-width: 0;
   padding: 24px 22px;
   border: 1px solid #cddcff;
   border-radius: 12px;
@@ -119,6 +121,7 @@
 }
 
 .usage-table-wrap {
+  min-width: 0;
   overflow-x: auto;
   border: 1px solid #a9c0ff;
   border-radius: 10px;
