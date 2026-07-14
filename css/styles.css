@@ -846,8 +846,14 @@ a.commission-closed {
   }
 
   .chat-body {
-    gap: 6px;
+    gap: 4px;
     padding: 12px;
+  }
+
+  .chat-message {
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 1.25;
   }
 
   .chat-form {
