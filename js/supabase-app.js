@@ -90,6 +90,43 @@
     return client.from(table).insert(payload);
   }
 
+  async function createCommissionRequest(payload) {
+    if (!client) {
+      return { data: null, error: new Error("Supabase is not configured.") };
+    }
+
+    const rpcResult = await client.rpc("create_commission_request", {
+      p_name: payload.name,
+      p_email: payload.email,
+      p_contact: payload.contact,
+      p_request_type: payload.request_type,
+      p_people: payload.people,
+      p_usage: payload.usage,
+      p_message: payload.message,
+      p_reference_paths: payload.reference_paths,
+    });
+
+    if (!rpcResult.error) {
+      return { data: { id: rpcResult.data }, error: null };
+    }
+
+    if (!/create_commission_request|schema cache|function/i.test(rpcResult.error.message || "")) {
+      return rpcResult;
+    }
+
+    const insertResult = await client.from("commission_requests").insert(payload).select("id").single();
+    if (!insertResult.error) {
+      return insertResult;
+    }
+
+    const fallbackResult = await insert("commission_requests", payload);
+    return fallbackResult.error ? fallbackResult : { data: null, error: null };
+  }
+
+  function formatRequestId(id) {
+    return id ? `#${String(id).padStart(6, "0")}` : "";
+  }
+
   async function loadPublicState() {
     if (!client) return;
     const rpcResult = await client.rpc("get_public_site_state");
@@ -286,7 +323,7 @@
         referencePaths.push(path);
       }
 
-      const { error } = await insert("commission_requests", {
+      const { data, error } = await createCommissionRequest({
         name: values.name || "",
         email: values.email || "",
         contact: values.contact || "",
@@ -306,7 +343,8 @@
       form.reset();
       selectedReferenceFiles = [];
       if (referenceCount) referenceCount.textContent = emptyReferenceText;
-      setStatus(form, "신청이 저장되었습니다.", "success");
+      const requestNumber = formatRequestId(data?.id);
+      setStatus(form, requestNumber ? `신청이 저장되었습니다. 신청 번호: ${requestNumber}` : "신청이 저장되었습니다.", "success");
       loadPublicState();
     });
   }
