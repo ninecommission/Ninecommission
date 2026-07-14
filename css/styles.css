@@ -513,7 +513,7 @@ a.commission-closed {
 
 .chat-body {
   display: grid;
-  gap: 10px;
+  gap: 6px;
   min-height: 0;
   max-height: none;
   padding: 14px;
@@ -523,10 +523,10 @@ a.commission-closed {
 
 .chat-message {
   max-width: 86%;
-  padding: 9px 12px;
-  border-radius: 12px;
+  padding: 6px 10px;
+  border-radius: 10px;
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .chat-message.artist {
@@ -838,7 +838,7 @@ a.commission-closed {
   }
 
   .chat-body {
-    gap: 8px;
+    gap: 6px;
     padding: 12px;
   }
 
