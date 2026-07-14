@@ -62,6 +62,25 @@
     status.dataset.type = type;
   }
 
+  function setStatusWithCode(form, beforeText, codeText, type) {
+    let status = form.querySelector("[data-form-status]");
+
+    if (!status) {
+      status = document.createElement("p");
+      status.dataset.formStatus = "";
+      status.className = "form-status";
+      form.appendChild(status);
+    }
+
+    status.textContent = beforeText;
+    if (codeText) {
+      const code = document.createElement("code");
+      code.textContent = codeText;
+      status.append(" ", code);
+    }
+    status.dataset.type = type;
+  }
+
   function applyCommissionAvailability(slotStatus) {
     currentSlotStatus = slotStatus;
     const isResting = slotStatus === "휴식중";
@@ -344,7 +363,11 @@
       selectedReferenceFiles = [];
       if (referenceCount) referenceCount.textContent = emptyReferenceText;
       const requestNumber = formatRequestId(data?.id);
-      setStatus(form, requestNumber ? `신청이 저장되었습니다. 신청 번호: ${requestNumber}` : "신청이 저장되었습니다.", "success");
+      if (requestNumber) {
+        setStatusWithCode(form, "신청이 저장되었습니다. 신청 번호:", requestNumber, "success");
+      } else {
+        setStatus(form, "신청이 저장되었습니다.", "success");
+      }
       loadPublicState();
     });
   }
