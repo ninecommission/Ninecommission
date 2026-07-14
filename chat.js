@@ -190,6 +190,12 @@
           : null
       );
       if (!serverMessages) return;
+      if (hasFullThread && serverMessages.length === 0) {
+        messages = [];
+        saveMessages(messages);
+        renderMessages();
+        return;
+      }
 
       const serverById = new Map(serverMessages.map((message) => [message.id, message]));
       const unmatchedServerMessages = [...serverMessages];
