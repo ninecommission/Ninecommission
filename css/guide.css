@@ -222,33 +222,42 @@
   }
 
   .process-flow {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    gap: 8px;
-    padding: 18px 14px 14px;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    scrollbar-width: thin;
+    gap: 1px;
+    padding: 14px 4px;
+    overflow: visible;
   }
 
   .process-arrow {
     display: block;
-    flex: 0 0 auto;
-    font-size: 18px;
+    font-size: 11px;
   }
 
   .process-step {
-    flex: 0 0 112px;
-    scroll-snap-align: start;
+    min-width: 0;
+    gap: 5px;
   }
 
   .process-icon {
-    width: 48px;
-    height: 48px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .process-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .process-step strong {
+    font-size: 10px;
+    line-height: 1.3;
+    word-break: keep-all;
   }
 
   .process-step p {
-    min-height: 32px;
+    display: none;
   }
 
   .step-list li {
