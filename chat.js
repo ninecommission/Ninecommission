@@ -134,6 +134,7 @@
     const messageList = widget.querySelector("[data-chat-messages]");
     const visitorCode = getVisitorCode();
     let messages = loadMessages();
+    let replyTimer;
 
     function setOpen(open) {
       widget.classList.toggle("is-open", open);
@@ -158,6 +159,25 @@
       messageList.scrollTop = messageList.scrollHeight;
     }
 
+    async function loadAdminReplies() {
+      const client = window.NineSupabase?.getClient?.();
+      if (!client) return;
+
+      const { data, error } = await client.rpc("get_chat_replies", { p_visitor_code: visitorCode });
+      if (error || !Array.isArray(data)) return;
+
+      const savedReplyIds = new Set(messages.filter((message) => message.serverId).map((message) => String(message.serverId)));
+      const newReplies = data.filter((reply) => !savedReplyIds.has(String(reply.id)));
+      if (!newReplies.length) return;
+
+      messages = [
+        ...messages,
+        ...newReplies.map((reply) => ({ role: "artist", text: reply.message, serverId: String(reply.id) })),
+      ];
+      saveMessages(messages);
+      renderMessages();
+    }
+
     function addMessage(text) {
       messages = [...messages, { role: "user", text }];
       saveMessages(messages);
@@ -168,6 +188,8 @@
           page_path: window.location.pathname,
           sender: visitorCode,
           message: text,
+        }).then(({ error }) => {
+          if (error) console.error("Chat message save failed:", error.message);
         });
       }
     }
@@ -201,6 +223,9 @@
 
     renderMessages();
     setOpen(false);
+    loadAdminReplies();
+    replyTimer = window.setInterval(loadAdminReplies, 5000);
+    window.addEventListener("pagehide", () => window.clearInterval(replyTimer), { once: true });
   }
 
   if (document.readyState === "loading") {

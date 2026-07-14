@@ -87,7 +87,7 @@
       return { data: null, error: new Error("Supabase is not configured.") };
     }
 
-    return client.from(table).insert(payload).select().single();
+    return client.from(table).insert(payload);
   }
 
   async function loadPublicState() {

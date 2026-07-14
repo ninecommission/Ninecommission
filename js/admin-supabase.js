@@ -12,7 +12,7 @@
     const [{ data: notices }, { data: inquiries }, { data: chats }] = await Promise.all([
       client.from("notices").select("title,published,created_at").order("created_at", { ascending: false }).limit(3),
       client.from("inquiries").select("name,message,created_at").order("created_at", { ascending: false }).limit(3),
-      client.from("chat_messages").select("sender,message,created_at").order("created_at", { ascending: false }).limit(3),
+      client.from("chat_messages").select("sender,message,created_at").not("sender", "like", "ADMIN:%").order("created_at", { ascending: false }).limit(3),
     ]);
 
     if (noticeList) {

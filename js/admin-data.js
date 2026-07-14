@@ -125,7 +125,13 @@
     const list = document.querySelector("[data-chat-list]"); if (!list) return;
     const { data, error } = await client.from("chat_messages").select("id,created_at,page_path,sender,message").order("created_at", { ascending: false });
     if (error) return toast("채팅 문의를 불러오지 못했습니다.");
-    list.innerHTML = (data || []).map((item) => `<article class="chat-manage-item" data-filter-row><div><p>${esc(item.message)}</p><div class="chat-manage-meta"><span>발신 코드: <strong>${esc(item.sender || "기존 방문자")}</strong></span><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>접수 페이지: ${esc(item.page_path || "-")}</span></div></div><button class="admin-button danger" data-chat-delete="${item.id}">삭제</button></article>`).join("");
+    list.innerHTML = (data || []).map((item) => {
+      const sender = item.sender || "";
+      const isReply = sender.startsWith("ADMIN:");
+      const visitorCode = isReply ? sender.slice(6) : sender;
+      const canReply = /^[MP]-[A-Z0-9]{6}$/.test(visitorCode) && !isReply;
+      return `<article class="chat-manage-item ${isReply ? "admin-reply" : ""}" data-filter-row><div><p>${esc(item.message)}</p><div class="chat-manage-meta"><span>${isReply ? "답변 대상" : "발신 코드"}: <strong>${esc(visitorCode || "기존 방문자")}</strong></span><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>접수 페이지: ${esc(item.page_path || "-")}</span></div>${canReply ? `<form class="chat-reply-form" data-chat-reply="${visitorCode}"><input name="reply" maxlength="2000" placeholder="${visitorCode} 사용자에게 답변" required><button class="admin-button primary" type="submit">답변 보내기</button></form>` : ""}</div><button class="admin-button danger" data-chat-delete="${item.id}">삭제</button></article>`;
+    }).join("");
     const empty = document.querySelector("[data-chat-empty]"); if (empty) empty.hidden = Boolean(data?.length);
     const clear = document.querySelector("[data-clear-chats]"); if (clear) clear.disabled = !data?.length;
   }
@@ -206,6 +212,29 @@
       toast("문의를 삭제했습니다.");
     }
     if (requestImagesId) await showRequestImages(requestImagesId);
+  });
+
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("[data-chat-reply]");
+    if (!form) return;
+    event.preventDefault();
+    const visitorCode = form.dataset.chatReply;
+    const input = form.elements.reply;
+    const message = input.value.trim();
+    if (!/^[MP]-[A-Z0-9]{6}$/.test(visitorCode) || !message) return;
+
+    const button = form.querySelector("button[type='submit']");
+    button.disabled = true;
+    const { error } = await client.from("chat_messages").insert({
+      page_path: "/admin-chats.html",
+      sender: `ADMIN:${visitorCode}`,
+      message,
+    });
+    button.disabled = false;
+    if (error) return toast("답변을 보내지 못했습니다.");
+    await log("채팅 답변", visitorCode);
+    await loadChats();
+    toast(`${visitorCode} 사용자에게 답변을 보냈습니다.`);
   });
 
   document.querySelector("[data-clear-logs]")?.addEventListener("click", async () => {
