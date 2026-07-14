@@ -542,30 +542,16 @@ a.commission-closed {
   margin: 0;
 }
 
-.chat-message-delete {
-  justify-self: end;
-  padding: 0;
-  border: 0;
-  color: inherit;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1.2;
-  text-decoration: underline;
-  opacity: 0.72;
-  background: transparent;
-  cursor: pointer;
-}
-
-.chat-message-delete:hover,
-.chat-message-delete:focus-visible {
-  opacity: 1;
-}
-
 .chat-message.artist {
   justify-self: start;
   color: var(--ink);
   background: white;
+}
+
+.chat-message.is-deleted {
+  color: #7a849f;
+  font-style: italic;
+  background: #eef3fb;
 }
 
 .chat-message.user {

@@ -2,9 +2,9 @@
   const STORAGE_KEY = "nine-commission-chat-v2";
   const OPEN_KEY = "nine-commission-chat-open-v2";
   const RESET_KEY = "nine-commission-chat-reset-20260715";
-  const HIDDEN_SERVER_KEY = "nine-commission-chat-hidden-v2";
 
   const defaultMessages = [];
+  const deletedMessageText = "\uAD00\uB9AC\uC790\uC5D0 \uC758\uD574 \uBA54\uC2DC\uC9C0\uAC00 \uC0AD\uC81C\uB418\uC5C8\uC2B5\uB2C8\uB2E4.";
 
   function readStorage(key) {
     try {
@@ -55,19 +55,6 @@
 
   function saveMessages(messages) {
     writeStorage(STORAGE_KEY, JSON.stringify(messages));
-  }
-
-  function loadHiddenServerIds() {
-    try {
-      const savedIds = JSON.parse(readStorage(HIDDEN_SERVER_KEY));
-      return new Set(Array.isArray(savedIds) ? savedIds.map(String) : []);
-    } catch (error) {
-      return new Set();
-    }
-  }
-
-  function saveHiddenServerIds(ids) {
-    writeStorage(HIDDEN_SERVER_KEY, JSON.stringify([...ids]));
   }
 
   function getVisitorCode() {
@@ -141,7 +128,6 @@
     const messageList = widget.querySelector("[data-chat-messages]");
     const visitorCode = getVisitorCode();
     let messages = loadMessages();
-    let hiddenServerIds = loadHiddenServerIds();
     let replyTimer;
 
     function setOpen(open) {
@@ -157,39 +143,19 @@
     function renderMessages() {
       messageList.innerHTML = "";
 
-      messages.forEach((message, index) => {
+      messages.forEach((message) => {
         const bubble = document.createElement("article");
         bubble.className = `chat-message ${message.role}`;
+        bubble.classList.toggle("is-deleted", Boolean(message.deleted));
 
         const text = document.createElement("p");
         text.textContent = message.text;
 
-        const deleteButton = document.createElement("button");
-        deleteButton.className = "chat-message-delete";
-        deleteButton.type = "button";
-        deleteButton.dataset.chatDeleteIndex = String(index);
-        deleteButton.textContent = "\uC0AD\uC81C";
-        deleteButton.setAttribute("aria-label", "\uBA54\uC2DC\uC9C0 \uC0AD\uC81C");
-
-        bubble.append(text, deleteButton);
+        bubble.append(text);
         messageList.appendChild(bubble);
       });
 
       messageList.scrollTop = messageList.scrollHeight;
-    }
-
-    function deleteMessage(index) {
-      const message = messages[index];
-      if (!message) return;
-
-      if (message.serverId) {
-        hiddenServerIds.add(String(message.serverId));
-        saveHiddenServerIds(hiddenServerIds);
-      }
-
-      messages = messages.filter((_, messageIndex) => messageIndex !== index);
-      saveMessages(messages);
-      renderMessages();
     }
 
     async function loadAdminReplies() {
@@ -199,16 +165,38 @@
       const { data, error } = await client.rpc("get_chat_replies", { p_visitor_code: visitorCode });
       if (error || !Array.isArray(data)) return;
 
-      const localMessages = messages.filter((message) => !message.serverId);
-      const serverReplies = data
-        .filter((reply) => !hiddenServerIds.has(String(reply.id)))
-        .map((reply) => ({
+      const repliesById = new Map(data.map((reply) => [String(reply.id), reply]));
+      const syncedMessages = messages.map((message) => {
+        if (!message.serverId) return message;
+
+        const reply = repliesById.get(String(message.serverId));
+        if (!reply) {
+          return {
+            ...message,
+            role: "artist",
+            text: deletedMessageText,
+            deleted: true,
+          };
+        }
+
+        repliesById.delete(String(message.serverId));
+        return {
+          ...message,
           role: "artist",
           text: reply.message,
           serverId: String(reply.id),
-        }));
+          deleted: false,
+        };
+      });
 
-      messages = [...localMessages, ...serverReplies];
+      const newReplies = [...repliesById.values()].map((reply) => ({
+        role: "artist",
+        text: reply.message,
+        serverId: String(reply.id),
+        deleted: false,
+      }));
+
+      messages = [...syncedMessages, ...newReplies];
       saveMessages(messages);
       renderMessages();
     }
@@ -235,13 +223,6 @@
 
     closeButton.addEventListener("click", () => {
       setOpen(false);
-    });
-
-    messageList.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-chat-delete-index]");
-      if (!button) return;
-
-      deleteMessage(Number(button.dataset.chatDeleteIndex));
     });
 
     form.addEventListener("submit", (event) => {
