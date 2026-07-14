@@ -814,6 +814,10 @@ a.commission-closed {
     bottom: 24px;
   }
 
+  .chat-widget.is-open {
+    z-index: 120;
+  }
+
   .chat-fab {
     width: 54px;
     height: 54px;
