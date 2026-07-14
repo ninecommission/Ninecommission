@@ -43,7 +43,7 @@
 
     const { data: requests } = await client
       .from("commission_requests")
-      .select("id,name,request_type,status,created_at")
+      .select("id,request_code,name,request_type,status,created_at")
       .order("created_at", { ascending: false })
       .limit(5);
 
@@ -55,7 +55,7 @@
         const date = new Date(request.created_at).toISOString().slice(0, 10);
         return `
           <tr>
-            <td>#${String(request.id).padStart(6, "0")}</td>
+            <td>${escapeHtml(request.request_code || `#${String(request.id).padStart(6, "0")}`)}</td>
             <td>${escapeHtml(request.name || "-")}</td>
             <td>${escapeHtml(request.request_type || "-")}</td>
             <td><span class="badge received">${escapeHtml(request.status || "received")}</span></td>

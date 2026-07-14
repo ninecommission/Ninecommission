@@ -94,7 +94,7 @@
     tbody.innerHTML = data.map((item) => {
       const currentStatus = statusLabels[item.status] ? item.status : "received";
       const options = Object.entries(statusLabels).map(([value, label]) => `<option value="${value}"${value === currentStatus ? " selected" : ""}>${label}</option>`).join("");
-      return `<tr data-filter-row data-status="${currentStatus}"><td>#${item.id}</td><td>${esc(item.name)}</td><td>${esc(item.request_type)}</td><td>-</td><td><select class="request-status-select" data-request-status="${item.id}">${options}</select></td><td>${new Date(item.created_at).toLocaleDateString("ko-KR")}</td><td>${item.reference_paths?.length ? `<button class="admin-button" data-request-images="${item.id}">보기 (${item.reference_paths.length})</button>` : "-"}</td><td class="row-actions"><button data-request-delete="${item.id}">삭제</button></td></tr>`;
+      return `<tr data-filter-row data-status="${currentStatus}"><td>${esc(item.request_code || `#${item.id}`)}</td><td>${esc(item.name)}</td><td>${esc(item.request_type)}</td><td>-</td><td><select class="request-status-select" data-request-status="${item.id}">${options}</select></td><td>${new Date(item.created_at).toLocaleDateString("ko-KR")}</td><td>${item.reference_paths?.length ? `<button class="admin-button" data-request-images="${item.id}">보기 (${item.reference_paths.length})</button>` : "-"}</td><td class="row-actions"><button data-request-delete="${item.id}">삭제</button></td></tr>`;
     }).join("");
     document.querySelector(".empty-state").hidden = data.length > 0;
   }

@@ -126,14 +126,14 @@
     });
 
     if (!rpcResult.error) {
-      return { data: { id: rpcResult.data }, error: null };
+      return { data: { request_code: rpcResult.data }, error: null };
     }
 
     if (!/create_commission_request|schema cache|function/i.test(rpcResult.error.message || "")) {
       return rpcResult;
     }
 
-    const insertResult = await client.from("commission_requests").insert(payload).select("id").single();
+    const insertResult = await client.from("commission_requests").insert(payload).select("id,request_code").single();
     if (!insertResult.error) {
       return insertResult;
     }
@@ -142,8 +142,8 @@
     return fallbackResult.error ? fallbackResult : { data: null, error: null };
   }
 
-  function formatRequestId(id) {
-    return id ? `#${String(id).padStart(6, "0")}` : "";
+  function formatRequestCode(code) {
+    return code ? String(code) : "";
   }
 
   async function loadPublicState() {
@@ -362,7 +362,7 @@
       form.reset();
       selectedReferenceFiles = [];
       if (referenceCount) referenceCount.textContent = emptyReferenceText;
-      const requestNumber = formatRequestId(data?.id);
+      const requestNumber = formatRequestCode(data?.request_code);
       if (requestNumber) {
         setStatusWithCode(form, "신청이 저장되었습니다. 신청 번호:", requestNumber, "success");
       } else {
@@ -414,13 +414,13 @@
       if (!client) { message.textContent = "조회 서비스에 연결하지 못했습니다."; return; }
       const values = getFormData(form);
       const { data, error } = await client.rpc("lookup_commission_status", {
-        p_request_id: Number(values.request_id),
+        p_request_code: values.request_id || "",
         p_email: values.email || "",
       });
       if (error) { message.textContent = "조회하지 못했습니다. 잠시 후 다시 시도해주세요."; return; }
       const item = Array.isArray(data) ? data[0] : data;
       if (!item) { message.textContent = "일치하는 신청을 찾지 못했습니다. 신청 번호와 이메일을 확인해주세요."; return; }
-      document.querySelector("[data-status-result-id]").textContent = `#${item.request_id}`;
+      document.querySelector("[data-status-result-id]").textContent = item.request_code || item.request_id || "-";
       document.querySelector("[data-status-result-type]").textContent = item.request_type || "-";
       document.querySelector("[data-status-result-status]").textContent = statusLabels[item.status] || item.status || "-";
       document.querySelector("[data-status-result-date]").textContent = new Date(item.created_at).toLocaleDateString("ko-KR");
