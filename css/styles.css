@@ -540,6 +540,7 @@ a.commission-closed {
 
 .chat-message p {
   margin: 0;
+  color: inherit;
 }
 
 .chat-message.artist {

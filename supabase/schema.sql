@@ -108,6 +108,25 @@ $$;
 revoke all on function public.get_chat_replies(text) from public;
 grant execute on function public.get_chat_replies(text) to anon, authenticated;
 
+create or replace function public.get_chat_thread_messages(p_visitor_code text)
+returns table (id bigint, created_at timestamptz, sender text, message text)
+language sql
+security definer
+set search_path = public
+as $$
+  select cm.id, cm.created_at, cm.sender, cm.message
+  from public.chat_messages cm
+  where p_visitor_code ~ '^[MP]-[A-Z0-9]{6}$'
+    and (
+      cm.sender = p_visitor_code
+      or cm.sender = 'ADMIN:' || p_visitor_code
+    )
+  order by cm.created_at asc;
+$$;
+
+revoke all on function public.get_chat_thread_messages(text) from public;
+grant execute on function public.get_chat_thread_messages(text) to anon, authenticated;
+
 drop policy if exists "admins manage chat messages" on public.chat_messages;
 create policy "admins manage chat messages"
   on public.chat_messages

@@ -57,6 +57,18 @@
     writeStorage(STORAGE_KEY, JSON.stringify(messages));
   }
 
+  function getRowRole(row, visitorCode) {
+    return row.sender === `ADMIN:${visitorCode}` ? "artist" : "user";
+  }
+
+  function normalizeThreadRows(rows, visitorCode) {
+    return rows.map((row) => ({
+      id: String(row.id),
+      role: getRowRole(row, visitorCode),
+      text: row.message,
+    }));
+  }
+
   function getVisitorCode() {
     const isMobile = window.matchMedia("(max-width: 760px)").matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
     const prefix = isMobile ? "M" : "P";
@@ -158,61 +170,88 @@
       messageList.scrollTop = messageList.scrollHeight;
     }
 
-    async function loadAdminReplies() {
+    async function loadThreadMessages() {
       const client = window.NineSupabase?.getClient?.();
       if (!client) return;
 
-      const { data, error } = await client.rpc("get_chat_replies", { p_visitor_code: visitorCode });
-      if (error || !Array.isArray(data)) return;
+      const threadResult = await client.rpc("get_chat_thread_messages", { p_visitor_code: visitorCode });
+      const rows = !threadResult.error && Array.isArray(threadResult.data)
+        ? normalizeThreadRows(threadResult.data, visitorCode)
+        : null;
+      const fallbackResult = rows ? null : await client.rpc("get_chat_replies", { p_visitor_code: visitorCode });
+      const serverMessages = rows || (
+        !fallbackResult?.error && Array.isArray(fallbackResult?.data)
+          ? fallbackResult.data.map((reply) => ({
+            id: String(reply.id),
+            role: "artist",
+            text: reply.message,
+          }))
+          : null
+      );
+      if (!serverMessages) return;
 
-      const repliesById = new Map(data.map((reply) => [String(reply.id), reply]));
+      const serverById = new Map(serverMessages.map((message) => [message.id, message]));
+      const unmatchedServerMessages = [...serverMessages];
       const syncedMessages = messages.map((message) => {
         if (!message.serverId) return message;
 
-        const reply = repliesById.get(String(message.serverId));
-        if (!reply) {
+        const serverMessage = serverById.get(String(message.serverId));
+        if (!serverMessage) {
           return {
             ...message,
-            role: "artist",
             text: deletedMessageText,
             deleted: true,
           };
         }
 
-        repliesById.delete(String(message.serverId));
+        const matchedIndex = unmatchedServerMessages.findIndex((item) => item.id === String(message.serverId));
+        if (matchedIndex > -1) unmatchedServerMessages.splice(matchedIndex, 1);
         return {
           ...message,
-          role: "artist",
-          text: reply.message,
-          serverId: String(reply.id),
+          role: serverMessage.role,
+          text: serverMessage.text,
+          serverId: serverMessage.id,
           deleted: false,
         };
       });
 
-      const newReplies = [...repliesById.values()].map((reply) => ({
-        role: "artist",
-        text: reply.message,
-        serverId: String(reply.id),
+      syncedMessages.forEach((message) => {
+        if (message.serverId || message.deleted) return;
+        const matchedIndex = unmatchedServerMessages.findIndex((serverMessage) => (
+          serverMessage.role === message.role && serverMessage.text === message.text
+        ));
+        if (matchedIndex === -1) return;
+        const [serverMessage] = unmatchedServerMessages.splice(matchedIndex, 1);
+        message.serverId = serverMessage.id;
+      });
+
+      const newMessages = unmatchedServerMessages.map((message) => ({
+        role: message.role,
+        text: message.text,
+        serverId: message.id,
         deleted: false,
       }));
 
-      messages = [...syncedMessages, ...newReplies];
+      messages = [...syncedMessages, ...newMessages];
       saveMessages(messages);
       renderMessages();
     }
 
     function addMessage(text) {
-      messages = [...messages, { role: "user", text }];
+      const localId = (window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`);
+      messages = [...messages, { role: "user", text, localId }];
       saveMessages(messages);
       renderMessages();
 
       if (window.NineSupabase && window.NineSupabase.isReady) {
-        window.NineSupabase.insert("chat_messages", {
+        const payload = {
           page_path: window.location.pathname,
           sender: visitorCode,
           message: text,
-        }).then(({ error }) => {
+        };
+        window.NineSupabase.insert("chat_messages", payload).then(({ error }) => {
           if (error) console.error("Chat message save failed:", error.message);
+          else loadThreadMessages();
         });
       }
     }
@@ -246,8 +285,8 @@
 
     renderMessages();
     setOpen(false);
-    loadAdminReplies();
-    replyTimer = window.setInterval(loadAdminReplies, 5000);
+    loadThreadMessages();
+    replyTimer = window.setInterval(loadThreadMessages, 5000);
     window.addEventListener("pagehide", () => window.clearInterval(replyTimer), { once: true });
   }
 
