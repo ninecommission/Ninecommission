@@ -686,14 +686,28 @@ a.commission-closed {
   }
 
   .side-menu {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 7px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .side-menu a {
-    min-height: 44px;
-    padding: 9px 11px;
-    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .side-menu a > span {
+    width: 24px;
+    height: 24px;
+  }
+
+  .side-menu a svg {
+    width: 22px;
+    height: 22px;
   }
 
   .chat-widget {
