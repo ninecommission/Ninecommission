@@ -436,7 +436,7 @@ a.commission-closed {
   display: none;
   overflow: hidden;
   width: min(340px, calc(100vw - 32px));
-  height: min(680px, calc(100vh - 116px));
+  height: min(520px, calc(100vh - 116px));
   max-height: none;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -516,17 +516,17 @@ a.commission-closed {
   gap: 10px;
   min-height: 0;
   max-height: none;
-  padding: 16px;
+  padding: 14px;
   overflow-y: auto;
   background: #f7faff;
 }
 
 .chat-message {
   max-width: 86%;
-  padding: 11px 13px;
+  padding: 9px 12px;
   border-radius: 12px;
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.45;
 }
 
 .chat-message.artist {
@@ -825,7 +825,25 @@ a.commission-closed {
 
   .chat-panel {
     width: calc(100vw - 20px);
-    height: min(600px, calc(100dvh - 100px));
+    height: min(440px, calc(100dvh - 100px));
+  }
+
+  .chat-panel-head {
+    padding: 13px 14px;
+  }
+
+  .chat-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .chat-body {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .chat-form {
+    padding: 12px 14px 14px;
   }
 
   .chat-actions {
