@@ -348,6 +348,10 @@ time {
     gap: 12px;
   }
 
+  .notice-card {
+    display: none;
+  }
+
   .section-title h2 {
     font-size: 19px;
   }
