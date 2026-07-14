@@ -525,6 +525,8 @@ a.commission-closed {
 
 .chat-message {
   align-self: start;
+  display: grid;
+  gap: 5px;
   width: fit-content;
   min-height: 0;
   max-width: 86%;
@@ -534,6 +536,30 @@ a.commission-closed {
   line-height: 1.35;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.chat-message p {
+  margin: 0;
+}
+
+.chat-message-delete {
+  justify-self: end;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: underline;
+  opacity: 0.72;
+  background: transparent;
+  cursor: pointer;
+}
+
+.chat-message-delete:hover,
+.chat-message-delete:focus-visible {
+  opacity: 1;
 }
 
 .chat-message.artist {

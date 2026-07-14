@@ -171,13 +171,13 @@
   });
 
   document.addEventListener("click", async (event) => {
-    const requestId = event.target.dataset.requestDelete;
-    const noticeId = event.target.dataset.noticeDelete;
-    const galleryId = event.target.dataset.galleryDelete;
-    const logId = event.target.dataset.logDelete;
-    const chatId = event.target.dataset.chatDelete;
-    const inquiryId = event.target.dataset.inquiryDelete;
-    const requestImagesId = event.target.dataset.requestImages;
+    const requestId = event.target.closest("[data-request-delete]")?.dataset.requestDelete;
+    const noticeId = event.target.closest("[data-notice-delete]")?.dataset.noticeDelete;
+    const galleryId = event.target.closest("[data-gallery-delete]")?.dataset.galleryDelete;
+    const logId = event.target.closest("[data-log-delete]")?.dataset.logDelete;
+    const chatId = event.target.closest("[data-chat-delete]")?.dataset.chatDelete;
+    const inquiryId = event.target.closest("[data-inquiry-delete]")?.dataset.inquiryDelete;
+    const requestImagesId = event.target.closest("[data-request-images]")?.dataset.requestImages;
     if (requestId) {
       if (!window.confirm(`신청 #${requestId}을(를) 삭제할까요? 삭제한 신청은 복구할 수 없습니다.`)) return;
       const { data: request } = await client.from("commission_requests").select("reference_paths").eq("id", requestId).single();
@@ -215,12 +215,12 @@
       toast("로그를 삭제했습니다.");
     }
     if (chatId) {
-      if (!window.confirm("이 채팅 문의를 삭제할까요?")) return;
+      if (!window.confirm("이 채팅 메시지를 삭제할까요?")) return;
       const { error } = await client.from("chat_messages").delete().eq("id", chatId);
-      if (error) return toast("채팅 문의를 삭제하지 못했습니다.");
-      await log("채팅 문의 삭제", `#${chatId}`);
+      if (error) return toast("채팅 메시지를 삭제하지 못했습니다.");
+      await log("채팅 메시지 삭제", `#${chatId}`);
       await loadChats();
-      toast("채팅 문의를 삭제했습니다.");
+      toast("채팅 메시지를 삭제했습니다.");
     }
     if (inquiryId) {
       if (!window.confirm("이 문의를 삭제할까요?")) return;
