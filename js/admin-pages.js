@@ -40,6 +40,29 @@
     sidebar.innerHTML = `<div class="admin-profile"><div class="admin-profile-avatar" aria-hidden="true"></div><div><small>ADMIN</small><strong>Nine</strong></div></div><nav class="admin-menu" aria-label="관리자 메뉴">${Object.keys(labels)
       .map((key) => `<a class="${key === page ? "active" : ""}" href="${links[key]}">${icons[key]}${labels[key]}</a>`)
       .join("")}</nav><a class="logout-link" href="admin-login.html" data-admin-logout><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path></svg>로그아웃</a>`;
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "mobile-sidebar-toggle";
+    toggle.dataset.mobileSidebarToggle = "";
+    toggle.setAttribute("aria-label", "관리자 메뉴 펼치기");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>';
+    sidebar.prepend(toggle);
+
+    const setSidebarOpen = (open) => {
+      sidebar.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "관리자 메뉴 접기" : "관리자 메뉴 펼치기");
+    };
+
+    toggle.addEventListener("click", () => setSidebarOpen(!sidebar.classList.contains("is-open")));
+    document.addEventListener("click", (event) => {
+      if (sidebar.classList.contains("is-open") && !sidebar.contains(event.target)) setSidebarOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setSidebarOpen(false);
+    });
   }
 
   const toast = document.querySelector("[data-toast]");

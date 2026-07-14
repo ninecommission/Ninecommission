@@ -218,6 +218,10 @@ a {
   gap: 12px;
 }
 
+.mobile-sidebar-toggle {
+  display: none;
+}
+
 .status-card .status-top span {
   visibility: hidden;
 }
@@ -708,6 +712,74 @@ a.commission-closed {
   .side-menu a svg {
     width: 22px;
     height: 22px;
+  }
+
+  .profile-card:has(.side-menu) {
+    position: fixed;
+    z-index: 80;
+    top: 12px;
+    right: 10px;
+    width: 60px;
+    max-height: calc(100dvh - 24px);
+    padding: 8px 6px;
+    overflow-y: auto;
+    border: 1px solid rgba(38, 93, 214, 0.16);
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(30, 65, 135, 0.2);
+    transition: width 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .profile-card:has(.side-menu).is-open {
+    width: min(240px, calc(100vw - 20px));
+    box-shadow: 0 22px 60px rgba(20, 48, 105, 0.3);
+  }
+
+  .profile-card:has(.side-menu) .profile-top {
+    display: none;
+  }
+
+  .mobile-sidebar-toggle {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    margin: 0 auto 7px;
+    padding: 0;
+    place-items: center;
+    color: var(--blue);
+    background: var(--blue-soft);
+    border: 0;
+    border-radius: 13px;
+    cursor: pointer;
+  }
+
+  .mobile-sidebar-toggle svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.22s ease;
+  }
+
+  .profile-card.is-open .mobile-sidebar-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  .profile-card:has(.side-menu) .side-menu {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .profile-card:has(.side-menu).is-open .side-menu a {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    justify-content: initial;
+    min-height: 48px;
+    padding: 0 12px;
+    font-size: 14px;
+    white-space: nowrap;
   }
 
   .chat-widget {

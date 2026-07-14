@@ -16,6 +16,34 @@
     return client;
   }
 
+  function bindMobileSidebar() {
+    const sidebar = document.querySelector(".profile-card:has(.side-menu)");
+    if (!sidebar || sidebar.querySelector("[data-mobile-sidebar-toggle]")) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "mobile-sidebar-toggle";
+    button.dataset.mobileSidebarToggle = "";
+    button.setAttribute("aria-label", "메뉴 펼치기");
+    button.setAttribute("aria-expanded", "false");
+    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>';
+    sidebar.prepend(button);
+
+    const setOpen = (open) => {
+      sidebar.classList.toggle("is-open", open);
+      button.setAttribute("aria-expanded", String(open));
+      button.setAttribute("aria-label", open ? "메뉴 접기" : "메뉴 펼치기");
+    };
+
+    button.addEventListener("click", () => setOpen(!sidebar.classList.contains("is-open")));
+    document.addEventListener("click", (event) => {
+      if (sidebar.classList.contains("is-open") && !sidebar.contains(event.target)) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  }
+
   function getFormData(form) {
     return Object.fromEntries(new FormData(form).entries());
   }
@@ -349,6 +377,7 @@
 
   loadCachedProfile();
   document.addEventListener("DOMContentLoaded", () => {
+    bindMobileSidebar();
     loadCachedProfile();
     setTimeout(loadCachedProfile, 0);
     bindApplyForm();
