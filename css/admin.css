@@ -868,7 +868,9 @@ td:first-child {
     border: 0;
     border-radius: 16px;
     outline: none;
-    box-shadow: 0 8px 22px rgba(16, 49, 119, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: none;
     cursor: pointer;
     transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
@@ -882,7 +884,8 @@ td:first-child {
   }
 
   .admin-sidebar .mobile-sidebar-toggle:focus-visible {
-    box-shadow: 0 0 0 4px rgba(103, 151, 255, 0.22), 0 8px 22px rgba(16, 49, 119, 0.38);
+    outline: none;
+    box-shadow: none;
   }
 
   .admin-sidebar .mobile-sidebar-toggle svg {
