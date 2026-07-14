@@ -278,15 +278,33 @@
   }
 
   .gallery-dialog {
-    gap: 12px;
-    padding: 18px;
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    gap: 8px;
+    max-height: calc(100dvh - 24px);
+    padding: 14px;
   }
 
   .modal-art {
-    min-height: 260px;
+    min-height: 220px;
   }
 
   .sample-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .gallery-filter-panel {
+    min-height: 132px;
+    padding: 16px;
+  }
+
+  .filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .filter-row button {
+    flex: 0 0 auto;
   }
 }

@@ -1,4 +1,4 @@
-@import url("admin.css");
+@import url("admin.css?v=20260715-mobile");
 
 .admin-page { display: block; max-width: none; padding: 38px 44px; }
 .page-header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
@@ -75,3 +75,98 @@
 @media (max-width: 700px) { .request-images-panel { padding: 18px; } .request-images-grid { grid-template-columns: 1fr; } .request-images-grid a { min-height: 180px; } }
 body[data-admin-page] { visibility: hidden; }
 body[data-admin-page].admin-authenticated { visibility: visible; }
+
+@media (max-width: 700px) {
+  .admin-page {
+    padding: 20px 12px 28px;
+  }
+
+  .page-header {
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .page-header h2 {
+    font-size: 25px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .page-header > .admin-button,
+  .page-actions,
+  .page-actions .admin-button {
+    width: 100%;
+  }
+
+  .page-actions .admin-button {
+    flex: 1;
+  }
+
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar input,
+  .toolbar select {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  .content-card {
+    padding: 12px;
+  }
+
+  .content-card table {
+    min-width: 760px;
+  }
+
+  .notice-item,
+  .log-item,
+  .chat-manage-item,
+  .inquiry-manage-item {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .notice-item .admin-button,
+  .log-item .admin-button,
+  .chat-manage-item .admin-button,
+  .inquiry-manage-item .admin-button {
+    width: 100%;
+  }
+
+  .settings-grid-single {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-image-control {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .switch-row {
+    gap: 16px;
+  }
+
+  .login-card {
+    padding: 26px 20px;
+  }
+
+  .admin-form {
+    padding: 20px 16px;
+  }
+
+  .toast {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    text-align: center;
+  }
+}

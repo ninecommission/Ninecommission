@@ -310,21 +310,56 @@ time {
 
 @media (max-width: 760px) {
   .hero {
-    min-height: 210px;
+    min-height: 190px;
   }
 
   .hero-visual {
-    min-height: 210px;
+    min-height: 190px;
   }
 
   .portrait {
-    height: 190px;
-    width: 160px;
+    width: 148px;
+    height: 172px;
   }
 
-  .sample-grid,
+  .sample-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .sample-image {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .sample-info {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 12px;
+  }
+
+  .sample-info p {
+    grid-column: 1;
+  }
+
   .info-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .section-title h2 {
+    font-size: 19px;
+  }
+
+  .view-all-button {
+    min-height: 34px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .notice-card,
+  .guide-card {
+    padding: 20px 18px;
   }
 
   .guide-card {
@@ -335,5 +370,4 @@ time {
     width: 100%;
     text-align: center;
   }
-
 }

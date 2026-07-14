@@ -218,7 +218,7 @@
   }
 
   .guide-section-panel {
-    padding: 16px;
+    padding: 16px 14px;
   }
 
   .process-flow {
@@ -227,5 +227,20 @@
 
   .process-arrow {
     display: none;
+  }
+
+  .process-flow {
+    gap: 16px;
+    padding: 18px 14px;
+  }
+
+  .step-list li {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .usage-table {
+    min-width: 620px;
+    font-size: 13px;
   }
 }

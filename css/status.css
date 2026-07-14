@@ -144,4 +144,18 @@
   .status-result {
     grid-template-columns: 1fr;
   }
+
+  .status-board article,
+  .status-result div {
+    padding: 16px;
+  }
+
+  .status-lookup-form input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .status-lookup-form .primary-button {
+    width: 100%;
+  }
 }

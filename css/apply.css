@@ -117,3 +117,29 @@
   cursor: not-allowed;
   background: #8794aa;
 }
+
+@media (max-width: 760px) {
+  .apply-form-panel {
+    padding: 16px;
+  }
+
+  .apply-notice-box {
+    padding: 14px;
+  }
+
+  .commission-apply-form {
+    gap: 14px;
+  }
+
+  .commission-apply-form input,
+  .commission-apply-form select,
+  .commission-apply-form textarea {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .upload-box {
+    min-height: 116px;
+    padding: 16px;
+  }
+}

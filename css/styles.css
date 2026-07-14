@@ -637,23 +637,78 @@ a.commission-closed {
 }
 
 @media (max-width: 760px) {
+  body {
+    overflow-x: hidden;
+  }
+
   .layout {
-    width: min(100% - 24px, 560px);
-    margin: 12px auto;
+    gap: 12px;
+    width: min(100% - 20px, 560px);
+    margin: 10px auto;
+  }
+
+  .main-column,
+  .side-column {
+    gap: 12px;
   }
 
   .side-column {
     grid-template-columns: 1fr;
   }
 
+  .page-panel {
+    padding: 20px 16px;
+  }
+
+  .unified-title-panel {
+    height: auto;
+    min-height: 104px;
+    padding: 18px 16px;
+  }
+
+  .page-title h1 {
+    font-size: 24px;
+  }
+
+  .profile-card,
+  .contact-card {
+    padding: 20px 18px;
+  }
+
+  .profile-top {
+    gap: 13px;
+    margin-bottom: 18px;
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .side-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .side-menu a {
+    min-height: 44px;
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+
   .chat-widget {
-    right: 14px;
-    bottom: 14px;
+    right: 10px;
+    bottom: 10px;
   }
 
   .chat-fab {
-    width: 58px;
-    height: 58px;
+    width: 54px;
+    height: 54px;
+  }
+
+  .chat-panel {
+    width: calc(100vw - 20px);
+    height: min(600px, calc(100dvh - 86px));
   }
 
   .chat-actions {

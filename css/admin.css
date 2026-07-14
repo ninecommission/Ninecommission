@@ -754,20 +754,86 @@ td:first-child {
 }
 
 @media (max-width: 760px) {
+  .admin-sidebar {
+    position: static;
+    width: auto;
+    padding: 16px 12px 12px;
+    overflow: hidden;
+  }
+
+  .admin-profile {
+    gap: 11px;
+    margin: 0 4px 12px;
+    padding: 0 6px 14px;
+  }
+
+  .admin-profile-avatar {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .admin-profile strong {
+    font-size: 19px;
+  }
+
+  .admin-menu {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 10px;
+    scrollbar-width: thin;
+  }
+
+  .admin-menu a {
+    flex: 0 0 138px;
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+
+  .logout-link {
+    min-height: 44px;
+    margin-top: 2px;
+    padding: 10px 14px 0;
+    font-size: 14px;
+  }
+
   .admin-main {
-    grid-template-columns: 1fr;
-    padding: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 12px;
   }
 
   .hero-card,
   .quick-card,
   .dashboard-site-button,
-  .metric-card,
   .panel,
   .notice-panel,
   .system-panel,
   .slot-panel {
     grid-column: 1 / -1;
+  }
+
+  .metric-card {
+    grid-column: span 1;
+    min-height: 104px;
+    gap: 12px;
+    padding: 16px 14px;
+  }
+
+  .metric-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 21px;
+  }
+
+  .metric-card strong {
+    font-size: 25px;
+  }
+
+  .metric-card small {
+    display: none;
   }
 
   .requests-panel,
@@ -784,6 +850,27 @@ td:first-child {
 
   .hero-card {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 132px;
+    padding: 22px 20px;
+  }
+
+  .hero-card h2 {
+    font-size: 27px;
+  }
+
+  .hero-card p {
+    margin-top: 10px;
+    font-size: 15px;
+  }
+
+  .dashboard-site-button {
+    min-height: 96px;
+    padding: 18px;
+  }
+
+  .panel {
+    padding: 18px 16px;
   }
 
   .hero-illustration {
