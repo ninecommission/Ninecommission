@@ -723,14 +723,17 @@ a.commission-closed {
     max-height: calc(100dvh - 24px);
     padding: 8px 6px;
     overflow-y: auto;
-    border: 1px solid rgba(38, 93, 214, 0.16);
+    background: transparent;
+    border: 0;
     border-radius: 18px;
-    box-shadow: 0 18px 45px rgba(30, 65, 135, 0.2);
+    box-shadow: none;
     transition: width 0.22s ease, box-shadow 0.22s ease;
   }
 
   .profile-card:has(.side-menu).is-open {
     width: min(240px, calc(100vw - 20px));
+    background: var(--panel);
+    border: 1px solid rgba(38, 93, 214, 0.12);
     box-shadow: 0 22px 60px rgba(20, 48, 105, 0.3);
   }
 
@@ -742,14 +745,29 @@ a.commission-closed {
     display: grid;
     width: 46px;
     height: 46px;
-    margin: 0 auto 7px;
+    margin: 0 auto;
     padding: 0;
     place-items: center;
-    color: var(--blue);
-    background: var(--blue-soft);
+    color: #ffffff;
+    background: linear-gradient(145deg, #74a4ff, #3d75ed);
     border: 0;
-    border-radius: 13px;
+    border-radius: 16px;
+    outline: none;
+    box-shadow: 0 8px 22px rgba(52, 105, 221, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.38);
     cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .mobile-sidebar-toggle:active {
+    transform: scale(0.94);
+  }
+
+  .mobile-sidebar-toggle:focus-visible {
+    box-shadow: 0 0 0 4px rgba(103, 151, 255, 0.2), 0 8px 22px rgba(52, 105, 221, 0.3);
+  }
+
+  .profile-card.is-open .mobile-sidebar-toggle {
+    margin-bottom: 7px;
   }
 
   .mobile-sidebar-toggle svg {
@@ -757,7 +775,7 @@ a.commission-closed {
     height: 22px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 2;
+    stroke-width: 2.2;
     stroke-linecap: round;
     stroke-linejoin: round;
     transition: transform 0.22s ease;
