@@ -47,7 +47,7 @@
     toggle.dataset.mobileSidebarToggle = "";
     toggle.setAttribute("aria-label", "관리자 메뉴 펼치기");
     toggle.setAttribute("aria-expanded", "false");
-    toggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>';
+    toggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>';
     sidebar.prepend(toggle);
 
     const setSidebarOpen = (open) => {

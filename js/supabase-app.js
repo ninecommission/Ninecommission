@@ -26,7 +26,7 @@
     button.dataset.mobileSidebarToggle = "";
     button.setAttribute("aria-label", "메뉴 펼치기");
     button.setAttribute("aria-expanded", "false");
-    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>';
+    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>';
     sidebar.prepend(button);
 
     const setOpen = (open) => {

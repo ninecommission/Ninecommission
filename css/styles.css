@@ -764,12 +764,17 @@ a.commission-closed {
   }
 
   .profile-card.is-open .mobile-sidebar-toggle svg {
-    transform: rotate(180deg);
+    transform: none;
   }
 
   .profile-card:has(.side-menu) .side-menu {
+    display: none;
     grid-template-columns: 1fr;
     gap: 5px;
+  }
+
+  .profile-card:has(.side-menu).is-open .side-menu {
+    display: grid;
   }
 
   .profile-card:has(.side-menu).is-open .side-menu a {

@@ -761,17 +761,20 @@ td:first-child {
   .admin-sidebar {
     position: fixed;
     z-index: 100;
-    inset: 0 0 0 auto;
+    inset: 12px 10px auto auto;
     display: flex;
     width: 64px;
+    max-height: calc(100dvh - 24px);
     padding: 12px 8px;
     overflow: hidden;
+    border-radius: 18px;
     box-shadow: -14px 0 38px rgba(8, 24, 63, 0.18);
     transition: width 0.22s ease, box-shadow 0.22s ease;
   }
 
   .admin-sidebar.is-open {
     width: min(250px, calc(100vw - 20px));
+    height: calc(100dvh - 24px);
     box-shadow: -22px 0 60px rgba(8, 24, 63, 0.32);
   }
 
@@ -790,12 +793,16 @@ td:first-child {
   }
 
   .admin-menu {
-    display: grid;
+    display: none;
     width: 100%;
     gap: 6px;
     overflow-x: hidden;
     overflow-y: auto;
     padding: 0;
+  }
+
+  .admin-sidebar.is-open .admin-menu {
+    display: grid;
   }
 
   .admin-menu a {
@@ -820,7 +827,7 @@ td:first-child {
   }
 
   .logout-link {
-    display: grid;
+    display: none;
     grid-template-columns: 24px 1fr;
     align-items: center;
     gap: 13px;
@@ -835,6 +842,7 @@ td:first-child {
   }
 
   .admin-sidebar.is-open .logout-link {
+    display: grid;
     font-size: 14px;
   }
 
@@ -870,7 +878,7 @@ td:first-child {
   }
 
   .admin-sidebar.is-open .mobile-sidebar-toggle svg {
-    transform: rotate(180deg);
+    transform: none;
   }
 
   .admin-main {
