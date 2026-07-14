@@ -125,12 +125,31 @@
     const list = document.querySelector("[data-chat-list]"); if (!list) return;
     const { data, error } = await client.from("chat_messages").select("id,created_at,page_path,sender,message").order("created_at", { ascending: false });
     if (error) return toast("채팅 문의를 불러오지 못했습니다.");
-    list.innerHTML = (data || []).map((item) => {
+    const threads = new Map();
+    (data || []).forEach((item) => {
       const sender = item.sender || "";
       const isReply = sender.startsWith("ADMIN:");
       const visitorCode = isReply ? sender.slice(6) : sender;
-      const canReply = /^[MP]-[A-Z0-9]{6}$/.test(visitorCode) && !isReply;
-      return `<article class="chat-manage-item ${isReply ? "admin-reply" : ""}" data-filter-row><div><p>${esc(item.message)}</p><div class="chat-manage-meta"><span>${isReply ? "답변 대상" : "발신 코드"}: <strong>${esc(visitorCode || "기존 방문자")}</strong></span><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>접수 페이지: ${esc(item.page_path || "-")}</span></div>${canReply ? `<form class="chat-reply-form" data-chat-reply="${visitorCode}"><input name="reply" maxlength="2000" placeholder="${visitorCode} 사용자에게 답변" required><button class="admin-button primary" type="submit">답변 보내기</button></form>` : ""}</div><button class="admin-button danger" data-chat-delete="${item.id}">삭제</button></article>`;
+      const validCode = /^[MP]-[A-Z0-9]{6}$/.test(visitorCode);
+      const key = validCode ? visitorCode : `legacy-${item.id}`;
+      if (!threads.has(key)) threads.set(key, { code: validCode ? visitorCode : `기존 방문자 #${item.id}`, canReply: validCode, messages: [] });
+      threads.get(key).messages.push({ ...item, isReply });
+    });
+
+    const orderedThreads = [...threads.values()]
+      .map((thread) => ({ ...thread, messages: thread.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)) }))
+      .sort((a, b) => new Date(b.messages[b.messages.length - 1].created_at) - new Date(a.messages[a.messages.length - 1].created_at));
+
+    list.innerHTML = orderedThreads.map((thread) => {
+      const latest = thread.messages[thread.messages.length - 1];
+      const latestDate = new Date(latest.created_at);
+      const latestUserMessage = [...thread.messages].reverse().find((item) => !item.isReply);
+      const pagePath = latestUserMessage?.page_path || "-";
+      const history = thread.messages.map((item) => {
+        const sentAt = new Date(item.created_at);
+        return `<article class="chat-thread-message ${item.isReply ? "from-admin" : "from-user"}"><div class="chat-thread-message-head"><strong>${item.isReply ? "관리자 답변" : thread.code}</strong><time>${sentAt.toLocaleString("ko-KR")}</time></div><p>${esc(item.message)}</p><button class="chat-message-delete" type="button" data-chat-delete="${item.id}">메시지 삭제</button></article>`;
+      }).join("");
+      return `<details class="chat-thread" data-filter-row><summary><div class="chat-thread-summary"><div class="chat-thread-title"><span class="chat-thread-code">${esc(thread.code)}</span><span class="chat-thread-device">${thread.code.startsWith("M-") ? "모바일" : thread.code.startsWith("P-") ? "PC" : "기존"}</span></div><div class="chat-thread-meta"><span>날짜 <strong>${latestDate.toLocaleDateString("ko-KR")}</strong></span><span>시간 <strong>${latestDate.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}</strong></span><span>접수 페이지 <strong>${esc(pagePath)}</strong></span></div><div class="chat-thread-preview"><small>${latest.isReply ? "최근 답변" : "새 메시지"}</small><p>${esc(latest.message)}</p></div></div><span class="chat-thread-chevron" aria-hidden="true">⌄</span></summary><div class="chat-thread-history">${history}${thread.canReply ? `<form class="chat-reply-form" data-chat-reply="${thread.code}"><input name="reply" maxlength="2000" placeholder="${thread.code} 사용자에게 답변" required><button class="admin-button primary" type="submit">답변 보내기</button></form>` : ""}</div></details>`;
     }).join("");
     const empty = document.querySelector("[data-chat-empty]"); if (empty) empty.hidden = Boolean(data?.length);
     const clear = document.querySelector("[data-clear-chats]"); if (clear) clear.disabled = !data?.length;
