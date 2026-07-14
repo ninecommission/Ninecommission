@@ -810,8 +810,8 @@ a.commission-closed {
 
   .chat-widget {
     right: 10px;
-    top: 68px;
-    bottom: auto;
+    top: auto;
+    bottom: 24px;
   }
 
   .chat-fab {
@@ -821,7 +821,7 @@ a.commission-closed {
 
   .chat-panel {
     width: calc(100vw - 20px);
-    height: min(600px, calc(100dvh - 140px));
+    height: min(600px, calc(100dvh - 100px));
   }
 
   .chat-actions {
