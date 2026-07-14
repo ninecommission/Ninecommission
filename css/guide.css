@@ -222,16 +222,33 @@
   }
 
   .process-flow {
-    grid-template-columns: 1fr;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 14px 14px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
   }
 
   .process-arrow {
-    display: none;
+    display: block;
+    flex: 0 0 auto;
+    font-size: 18px;
   }
 
-  .process-flow {
-    gap: 16px;
-    padding: 18px 14px;
+  .process-step {
+    flex: 0 0 112px;
+    scroll-snap-align: start;
+  }
+
+  .process-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .process-step p {
+    min-height: 32px;
   }
 
   .step-list li {
