@@ -193,12 +193,18 @@
       const serverById = new Map(serverMessages.map((message) => [message.id, message]));
       const unmatchedServerMessages = [...serverMessages];
       const syncedMessages = messages.map((message) => {
+        if (message.deleted) return message;
         if (!message.serverId) return message;
 
         const serverMessage = serverById.get(String(message.serverId));
         if (!serverMessage) {
+          if (message.role !== "user") {
+            return null;
+          }
+
           return {
             ...message,
+            role: "artist",
             text: deletedMessageText,
             deleted: true,
           };
@@ -213,7 +219,7 @@
           serverId: serverMessage.id,
           deleted: false,
         };
-      });
+      }).filter(Boolean);
 
       syncedMessages.forEach((message) => {
         if (message.serverId || message.deleted) return;

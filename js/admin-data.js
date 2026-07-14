@@ -149,7 +149,8 @@
         const sentAt = new Date(item.created_at);
         return `<article class="chat-thread-message ${item.isReply ? "from-admin" : "from-user"}"><div class="chat-thread-message-head"><strong>${item.isReply ? "관리자 답변" : thread.code}</strong><time>${sentAt.toLocaleString("ko-KR")}</time></div><p>${esc(item.message)}</p><button class="chat-message-delete" type="button" data-chat-delete="${item.id}">메시지 삭제</button></article>`;
       }).join("");
-      return `<details class="chat-thread" data-filter-row><summary><div class="chat-thread-summary"><div class="chat-thread-title"><span class="chat-thread-code">${esc(thread.code)}</span><span class="chat-thread-device">${thread.code.startsWith("M-") ? "모바일" : thread.code.startsWith("P-") ? "PC" : "기존"}</span></div><div class="chat-thread-meta"><span>날짜 <strong>${latestDate.toLocaleDateString("ko-KR")}</strong></span><span>시간 <strong>${latestDate.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}</strong></span><span>접수 페이지 <strong>${esc(pagePath)}</strong></span></div><div class="chat-thread-preview"><small>${latest.isReply ? "최근 답변" : "새 메시지"}</small><p>${esc(latest.message)}</p></div></div><span class="chat-thread-chevron" aria-hidden="true">⌄</span></summary><div class="chat-thread-history">${history}${thread.canReply ? `<form class="chat-reply-form" data-chat-reply="${thread.code}"><input name="reply" maxlength="2000" placeholder="${thread.code} 사용자에게 답변" required><button class="admin-button primary" type="submit">답변 보내기</button></form>` : ""}</div></details>`;
+      const messageIds = thread.messages.map((item) => item.id).join(",");
+      return `<details class="chat-thread" data-filter-row><summary><div class="chat-thread-summary"><div class="chat-thread-title"><span class="chat-thread-code">${esc(thread.code)}</span><span class="chat-thread-device">${thread.code.startsWith("M-") ? "모바일" : thread.code.startsWith("P-") ? "PC" : "기존"}</span></div><div class="chat-thread-meta"><span>날짜 <strong>${latestDate.toLocaleDateString("ko-KR")}</strong></span><span>시간 <strong>${latestDate.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}</strong></span><span>접수 페이지 <strong>${esc(pagePath)}</strong></span></div><div class="chat-thread-preview"><small>${latest.isReply ? "최근 답변" : "새 메시지"}</small><p>${esc(latest.message)}</p></div></div><span class="chat-thread-chevron" aria-hidden="true">⌄</span></summary><div class="chat-thread-history">${history}<div class="chat-thread-actions"><button class="admin-button danger" type="button" data-chat-clear-thread="${esc(thread.code)}" data-chat-clear-ids="${messageIds}">기록 지우기</button></div>${thread.canReply ? `<form class="chat-reply-form" data-chat-reply="${thread.code}"><input name="reply" maxlength="2000" placeholder="${thread.code} 사용자에게 답변" required><button class="admin-button primary" type="submit">답변 보내기</button></form>` : ""}</div></details>`;
     }).join("");
     const empty = document.querySelector("[data-chat-empty]"); if (empty) empty.hidden = Boolean(data?.length);
     const clear = document.querySelector("[data-clear-chats]"); if (clear) clear.disabled = !data?.length;
@@ -176,6 +177,7 @@
     const galleryId = event.target.closest("[data-gallery-delete]")?.dataset.galleryDelete;
     const logId = event.target.closest("[data-log-delete]")?.dataset.logDelete;
     const chatId = event.target.closest("[data-chat-delete]")?.dataset.chatDelete;
+    const chatClearButton = event.target.closest("[data-chat-clear-thread]");
     const inquiryId = event.target.closest("[data-inquiry-delete]")?.dataset.inquiryDelete;
     const requestImagesId = event.target.closest("[data-request-images]")?.dataset.requestImages;
     if (requestId) {
@@ -221,6 +223,17 @@
       await log("채팅 메시지 삭제", `#${chatId}`);
       await loadChats();
       toast("채팅 메시지를 삭제했습니다.");
+    }
+    if (chatClearButton) {
+      const threadCode = chatClearButton.dataset.chatClearThread;
+      const messageIds = (chatClearButton.dataset.chatClearIds || "").split(",").filter(Boolean);
+      if (!messageIds.length) return;
+      if (!window.confirm(`${threadCode} 채팅 기록을 모두 지울까요? 사용자와 관리자 메시지가 모두 삭제됩니다.`)) return;
+      const { error } = await client.from("chat_messages").delete().in("id", messageIds);
+      if (error) return toast("채팅 기록을 지우지 못했습니다.");
+      await log("채팅 기록 지우기", threadCode);
+      await loadChats();
+      toast("채팅 기록을 지웠습니다.");
     }
     if (inquiryId) {
       if (!window.confirm("이 문의를 삭제할까요?")) return;
