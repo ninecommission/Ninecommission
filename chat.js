@@ -175,7 +175,8 @@
       if (!client) return;
 
       const threadResult = await client.rpc("get_chat_thread_messages", { p_visitor_code: visitorCode });
-      const rows = !threadResult.error && Array.isArray(threadResult.data)
+      const hasFullThread = !threadResult.error && Array.isArray(threadResult.data);
+      const rows = hasFullThread
         ? normalizeThreadRows(threadResult.data, visitorCode)
         : null;
       const fallbackResult = rows ? null : await client.rpc("get_chat_replies", { p_visitor_code: visitorCode });
@@ -231,6 +232,19 @@
         message.serverId = serverMessage.id;
       });
 
+      const resolvedMessages = syncedMessages.map((message) => {
+        if (!hasFullThread || message.deleted || message.serverId || message.role !== "user") {
+          return message;
+        }
+
+        return {
+          ...message,
+          role: "artist",
+          text: deletedMessageText,
+          deleted: true,
+        };
+      });
+
       const newMessages = unmatchedServerMessages.map((message) => ({
         role: message.role,
         text: message.text,
@@ -238,7 +252,7 @@
         deleted: false,
       }));
 
-      messages = [...syncedMessages, ...newMessages];
+      messages = [...resolvedMessages, ...newMessages];
       saveMessages(messages);
       renderMessages();
     }
