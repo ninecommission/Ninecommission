@@ -146,9 +146,7 @@ a {
   border: 0;
   border-radius: 999px;
   image-rendering: auto;
-  background:
-    radial-gradient(circle at 50% 36%, #fff1f6 0 17px, transparent 18px),
-    linear-gradient(145deg, #2658d7, #aac7ff);
+  background: transparent;
 }
 
 .profile-top {
@@ -250,6 +248,18 @@ a {
   border-color: #f5dfbd;
   color: #b66a16;
   background: #fff6e8;
+}
+
+.status-top span.status-resting {
+  border-color: #e1d8ed;
+  color: #76548f;
+  background: #f7f1fb;
+}
+
+a.commission-closed {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .status-card strong {
@@ -422,7 +432,8 @@ a {
   display: none;
   overflow: hidden;
   width: min(340px, calc(100vw - 32px));
-  max-height: min(620px, calc(100vh - 116px));
+  height: min(680px, calc(100vh - 116px));
+  max-height: none;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
@@ -430,7 +441,8 @@ a {
 }
 
 .chat-widget.is-open .chat-panel {
-  display: block;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
 .chat-fab:focus-visible,
@@ -498,7 +510,8 @@ a {
 .chat-body {
   display: grid;
   gap: 10px;
-  max-height: 260px;
+  min-height: 0;
+  max-height: none;
   padding: 16px;
   overflow-y: auto;
   background: #f7faff;

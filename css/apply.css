@@ -108,3 +108,12 @@
   border: 0;
   cursor: pointer;
 }
+
+.commission-apply-form.is-closed {
+  opacity: 0.72;
+}
+
+.commission-apply-form .primary-button:disabled {
+  cursor: not-allowed;
+  background: #8794aa;
+}

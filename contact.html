@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>문의하기 | NINE Commission</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=20260714-profile" />
   <link rel="stylesheet" href="css/contact.css" />
 </head>
 <body>
@@ -26,15 +26,15 @@
         <form class="inquiry-form" data-supabase-form="inquiry">
           <label>
             이름 / 닉네임
-            <input type="text" name="name" placeholder="연락 가능한 이름을 입력해주세요." />
+            <input type="text" name="name" placeholder="연락 가능한 이름을 입력해주세요." required />
           </label>
           <label>
             연락처
-            <input type="text" name="contact" placeholder="답변 받을 이메일 또는 SNS ID를 입력해주세요." />
+            <input type="text" name="contact" placeholder="답변 받을 이메일 또는 SNS ID를 입력해주세요." required />
           </label>
           <label>
             문의 내용
-            <textarea name="message" rows="6" placeholder="문의 내용을 입력해주세요."></textarea>
+            <textarea name="message" rows="6" placeholder="문의 내용을 입력해주세요." required></textarea>
           </label>
           <button class="primary-button" type="submit">문의 보내기</button>
         </form>

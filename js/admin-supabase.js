@@ -5,13 +5,31 @@
     return element.innerHTML;
   }
 
-  async function loadDashboardNotices(client) {
+  async function loadDashboardPanels(client) {
     const noticeList = document.querySelector("[data-admin-notices]");
-    if (!noticeList) return;
-    const { data: notices } = await client.from("notices").select("title,created_at,published").order("created_at", { ascending: false }).limit(3);
-    noticeList.innerHTML = notices?.length
-      ? notices.map((notice) => `<li><span>${escapeHtml(notice.title)}</span><time>${new Date(notice.created_at).toLocaleDateString("ko-KR")}</time><b>${notice.published ? "게시중" : "비공개"}</b></li>`).join("")
-      : "<li><span>등록된 공지가 없습니다.</span></li>";
+    const inquiryList = document.querySelector("[data-admin-inquiries]");
+    const chatList = document.querySelector("[data-admin-chats]");
+    const [{ data: notices }, { data: inquiries }, { data: chats }] = await Promise.all([
+      client.from("notices").select("title,published,created_at").order("created_at", { ascending: false }).limit(3),
+      client.from("inquiries").select("name,message,created_at").order("created_at", { ascending: false }).limit(3),
+      client.from("chat_messages").select("sender,message,created_at").order("created_at", { ascending: false }).limit(3),
+    ]);
+
+    if (noticeList) {
+      noticeList.innerHTML = notices?.length
+        ? notices.map((item) => `<li><span><strong>${escapeHtml(item.title || "제목 없음")}</strong><small>${item.published ? "게시 중" : "비공개"}</small></span><time>${new Date(item.created_at).toLocaleDateString("ko-KR")}</time></li>`).join("")
+        : "<li><span>등록된 공지가 없습니다.</span></li>";
+    }
+    if (inquiryList) {
+      inquiryList.innerHTML = inquiries?.length
+        ? inquiries.map((item) => `<li><span><strong>${escapeHtml(item.name || "이름 없음")}</strong><small>${escapeHtml(item.message || "내용 없음")}</small></span><time>${new Date(item.created_at).toLocaleDateString("ko-KR")}</time></li>`).join("")
+        : "<li><span>접수된 문의가 없습니다.</span></li>";
+    }
+    if (chatList) {
+      chatList.innerHTML = chats?.length
+        ? chats.map((item) => `<li><span><strong>${escapeHtml(item.sender || "방문자")}</strong><small>${escapeHtml(item.message || "내용 없음")}</small></span><time>${new Date(item.created_at).toLocaleDateString("ko-KR")}</time></li>`).join("")
+        : "<li><span>접수된 채팅이 없습니다.</span></li>";
+    }
   }
 
   async function loadAdminData() {
@@ -70,10 +88,12 @@
       if (slotText) slotText.textContent = `${percent}% 사용 중`;
     }
 
-    await loadDashboardNotices(client);
+    await loadDashboardPanels(client);
     client
-      .channel("admin-dashboard-notices")
-      .on("postgres_changes", { event: "*", schema: "public", table: "notices" }, () => loadDashboardNotices(client))
+      .channel("admin-dashboard-panels")
+      .on("postgres_changes", { event: "*", schema: "public", table: "notices" }, () => loadDashboardPanels(client))
+      .on("postgres_changes", { event: "*", schema: "public", table: "inquiries" }, () => loadDashboardPanels(client))
+      .on("postgres_changes", { event: "*", schema: "public", table: "chat_messages" }, () => loadDashboardPanels(client))
       .subscribe();
   }
 

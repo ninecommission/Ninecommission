@@ -44,11 +44,58 @@
     dialog.showModal();
   }
 
+  async function showRequestImages(requestId) {
+    const { data: request, error: requestError } = await client
+      .from("commission_requests")
+      .select("reference_paths")
+      .eq("id", requestId)
+      .single();
+    if (requestError) return toast("참고 이미지를 불러오지 못했습니다.");
+
+    const paths = request?.reference_paths || [];
+    if (!paths.length) return toast("등록된 참고 이미지가 없습니다.");
+
+    const signedImages = await Promise.all(paths.map(async (path) => {
+      const { data, error } = await client.storage.from("request-files").createSignedUrl(path, 300);
+      return error ? null : { path, url: data.signedUrl };
+    }));
+    const images = signedImages.filter(Boolean);
+    if (!images.length) return toast("참고 이미지를 열지 못했습니다.");
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "admin-dialog request-images-dialog";
+    dialog.innerHTML = `<section class="request-images-panel"><header><div><h2>참고 이미지</h2><p>${images.length}장</p></div><button type="button" data-dialog-close aria-label="닫기">×</button></header><div class="request-images-grid"></div></section>`;
+    const grid = dialog.querySelector(".request-images-grid");
+    images.forEach((image, index) => {
+      const link = document.createElement("a");
+      link.href = image.url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.setAttribute("aria-label", `참고 이미지 ${index + 1} 원본 보기`);
+      const element = document.createElement("img");
+      element.src = image.url;
+      element.alt = `참고 이미지 ${index + 1}`;
+      element.loading = "lazy";
+      link.appendChild(element);
+      grid.appendChild(link);
+    });
+    document.body.appendChild(dialog);
+    dialog.querySelector("[data-dialog-close]").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener("close", () => dialog.remove(), { once: true });
+    dialog.showModal();
+  }
+
   async function loadRequests() {
     const tbody = document.querySelector("tbody"); if (!tbody) return;
     const { data, error } = await client.from("commission_requests").select("*").order("created_at", { ascending: false });
     if (error) return;
-    tbody.innerHTML = data.map((item) => `<tr data-filter-row data-status="${esc(item.status)}"><td>#${item.id}</td><td>${esc(item.name)}</td><td>${esc(item.request_type)}</td><td>-</td><td><span class="badge received">${esc(item.status)}</span></td><td>${new Date(item.created_at).toLocaleDateString("ko-KR")}</td><td>${item.reference_paths?.length ? `<button class="admin-button" data-request-image="${esc(item.reference_paths[0])}">보기 (${item.reference_paths.length})</button>` : "-"}</td><td class="row-actions"><button data-request-delete="${item.id}">삭제</button></td></tr>`).join("");
+    const statusLabels = { received: "접수 완료", waiting: "입금 대기", progress: "진행 중", done: "완료" };
+    tbody.innerHTML = data.map((item) => {
+      const currentStatus = statusLabels[item.status] ? item.status : "received";
+      const options = Object.entries(statusLabels).map(([value, label]) => `<option value="${value}"${value === currentStatus ? " selected" : ""}>${label}</option>`).join("");
+      return `<tr data-filter-row data-status="${currentStatus}"><td>#${item.id}</td><td>${esc(item.name)}</td><td>${esc(item.request_type)}</td><td>-</td><td><select class="request-status-select" data-request-status="${item.id}">${options}</select></td><td>${new Date(item.created_at).toLocaleDateString("ko-KR")}</td><td>${item.reference_paths?.length ? `<button class="admin-button" data-request-images="${item.id}">보기 (${item.reference_paths.length})</button>` : "-"}</td><td class="row-actions"><button data-request-delete="${item.id}">삭제</button></td></tr>`;
+    }).join("");
     document.querySelector(".empty-state").hidden = data.length > 0;
   }
 
@@ -83,6 +130,15 @@
     const clear = document.querySelector("[data-clear-chats]"); if (clear) clear.disabled = !data?.length;
   }
 
+  async function loadInquiries() {
+    const list = document.querySelector("[data-inquiry-list]"); if (!list) return;
+    const { data, error } = await client.from("inquiries").select("id,created_at,name,contact,message").order("created_at", { ascending: false });
+    if (error) return toast("문의를 불러오지 못했습니다.");
+    list.innerHTML = (data || []).map((item) => `<article class="inquiry-manage-item" data-filter-row><div><h3>${esc(item.name || "이름 없음")}</h3><p>${esc(item.message)}</p><div class="inquiry-manage-meta"><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>연락처: ${esc(item.contact || "-")}</span></div></div><button class="admin-button danger" data-inquiry-delete="${item.id}">삭제</button></article>`).join("");
+    const empty = document.querySelector("[data-inquiry-empty]"); if (empty) empty.hidden = Boolean(data?.length);
+    const clear = document.querySelector("[data-clear-inquiries]"); if (clear) clear.disabled = !data?.length;
+  }
+
   document.querySelector(".page-header .primary")?.addEventListener("click", () => {
     if (page === "requests") modal("신청 등록", '<div class="field"><label>이름</label><input name="name" required></div><div class="field"><label>연락처</label><input name="contact"></div><div class="field"><label>신청 타입</label><input name="request_type" required></div><div class="field"><label>참고 이미지</label><input name="reference" type="file" accept="image/*" multiple></div><div class="field"><label>내용</label><textarea name="message"></textarea></div>', "등록", async (data) => { const referencePaths = []; for (const file of data.getAll("reference").filter((item) => item.size)) { const path = `${Date.now()}-${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`; const uploaded = await client.storage.from("request-files").upload(path, file); if (uploaded.error) throw uploaded.error; referencePaths.push(path); } const payload = { name: data.get("name"), contact: data.get("contact"), request_type: data.get("request_type"), message: data.get("message"), reference_paths: referencePaths, status: "received" }; const { error } = await client.from("commission_requests").insert(payload); if (error) throw error; await log("신청 등록", payload.name); await loadRequests(); toast("신청을 등록했습니다."); });
     if (page === "notices") modal("새 공지 작성", '<div class="field"><label>제목</label><input name="title" required></div><div class="field"><label>내용</label><textarea name="content" required></textarea></div><label class="agree-row"><input type="checkbox" name="published" checked> 바로 게시</label>', "저장", async (data) => { const payload = Object.fromEntries(data); payload.published = data.has("published"); const { error } = await client.from("notices").insert(payload); if (error) throw error; await log("공지 작성", payload.title); await loadNotices(); toast("공지를 저장했습니다."); });
@@ -95,7 +151,8 @@
     const galleryId = event.target.dataset.galleryDelete;
     const logId = event.target.dataset.logDelete;
     const chatId = event.target.dataset.chatDelete;
-    const requestImage = event.target.dataset.requestImage;
+    const inquiryId = event.target.dataset.inquiryDelete;
+    const requestImagesId = event.target.dataset.requestImages;
     if (requestId) {
       if (!window.confirm(`신청 #${requestId}을(를) 삭제할까요? 삭제한 신청은 복구할 수 없습니다.`)) return;
       const { data: request } = await client.from("commission_requests").select("reference_paths").eq("id", requestId).single();
@@ -140,11 +197,15 @@
       await loadChats();
       toast("채팅 문의를 삭제했습니다.");
     }
-    if (requestImage) {
-      const { data, error } = await client.storage.from("request-files").createSignedUrl(requestImage, 60);
-      if (error) return toast("이미지를 열지 못했습니다.");
-      window.open(data.signedUrl, "_blank", "noopener");
+    if (inquiryId) {
+      if (!window.confirm("이 문의를 삭제할까요?")) return;
+      const { error } = await client.from("inquiries").delete().eq("id", inquiryId);
+      if (error) return toast("문의를 삭제하지 못했습니다.");
+      await log("문의 삭제", `#${inquiryId}`);
+      await loadInquiries();
+      toast("문의를 삭제했습니다.");
     }
+    if (requestImagesId) await showRequestImages(requestImagesId);
   });
 
   document.querySelector("[data-clear-logs]")?.addEventListener("click", async () => {
@@ -161,6 +222,28 @@
     await log("전체 채팅 문의 삭제", "채팅 문의 전체 삭제");
     await loadChats();
     toast("전체 채팅 문의를 삭제했습니다.");
+  });
+
+  document.querySelector("[data-clear-inquiries]")?.addEventListener("click", async () => {
+    if (!window.confirm("전체 문의를 삭제할까요? 삭제한 문의는 복구할 수 없습니다.")) return;
+    const { error } = await client.from("inquiries").delete().gte("id", 0);
+    if (error) return toast("전체 문의를 삭제하지 못했습니다.");
+    await log("전체 문의 삭제", "문의 전체 삭제");
+    await loadInquiries();
+    toast("전체 문의를 삭제했습니다.");
+  });
+
+  document.addEventListener("change", async (event) => {
+    const requestId = event.target.dataset.requestStatus;
+    if (!requestId) return;
+    const status = event.target.value;
+    const allowed = ["received", "waiting", "progress", "done"];
+    if (!allowed.includes(status)) return;
+    const { error } = await client.from("commission_requests").update({ status }).eq("id", requestId);
+    if (error) { await loadRequests(); return toast("신청 상태를 변경하지 못했습니다."); }
+    await log("신청 상태 변경", `#${requestId} → ${status}`);
+    await loadRequests();
+    toast("신청 상태를 변경했습니다.");
   });
 
   function updateProfilePreview() {
@@ -193,14 +276,24 @@
 
   async function loadSettings() {
     const { data } = await client.from("site_settings").select("*").eq("id", 1).single(); if (!data) return;
-    const statusLabels = { OPEN: "접수중", CLOSED: "준비중", REST: "접수중", "쉬는 중": "접수중" };
-    document.querySelector("#status").value = statusLabels[data.slot_status] || data.slot_status; document.querySelector("#slots").value = data.total_slots; document.querySelector("#used").value = data.used_slots; document.querySelector("#period").value = data.average_period;
+    const statusLabels = { OPEN: "접수중", CLOSED: "준비중", REST: "휴식중", "쉬는 중": "휴식중" };
+    const statusInput = document.querySelector("#status");
+    const slotsInput = document.querySelector("#slots");
+    const usedInput = document.querySelector("#used");
+    const periodInput = document.querySelector("#period");
+    if (statusInput) statusInput.value = statusLabels[data.slot_status] || data.slot_status;
+    if (slotsInput) slotsInput.value = data.total_slots;
+    if (usedInput) usedInput.value = data.used_slots;
+    if (periodInput) periodInput.value = data.average_period;
     currentProfileImageUrl = data.profile_image_url || "";
     const preview = document.querySelector("[data-profile-preview]");
     if (preview && currentProfileImageUrl) preview.style.backgroundImage = `url("${currentProfileImageUrl}")`;
-    document.querySelector("[data-profile-scale]").value = Math.min(140, Math.max(70, Number(data.profile_image_scale) || 100));
-    document.querySelector("[data-profile-x]").value = data.profile_image_x ?? 50;
-    document.querySelector("[data-profile-y]").value = data.profile_image_y ?? 50;
+    const scaleInput = document.querySelector("[data-profile-scale]");
+    const xInput = document.querySelector("[data-profile-x]");
+    const yInput = document.querySelector("[data-profile-y]");
+    if (scaleInput) scaleInput.value = Math.min(140, Math.max(70, Number(data.profile_image_scale) || 100));
+    if (xInput) xInput.value = data.profile_image_x ?? 50;
+    if (yInput) yInput.value = data.profile_image_y ?? 50;
     const statusLookupSwitch = document.querySelector("[data-status-lookup-enabled]");
     if (statusLookupSwitch) {
       const enabled = data.status_lookup_enabled !== false;
@@ -220,17 +313,13 @@
       if (uploaded.error) return toast("프로필 사진을 업로드하지 못했습니다.");
       currentProfileImageUrl = client.storage.from("profile").getPublicUrl(path).data.publicUrl;
     }
-    const payload = { slot_status: document.querySelector("#status").value, total_slots: Number(document.querySelector("#slots").value || 0), used_slots: Number(document.querySelector("#used").value || 0), average_period: document.querySelector("#period").value, profile_image_url: currentProfileImageUrl, profile_image_scale: Number(document.querySelector("[data-profile-scale]").value), profile_image_x: Number(document.querySelector("[data-profile-x]").value), profile_image_y: Number(document.querySelector("[data-profile-y]").value), status_lookup_enabled: document.querySelector("[data-status-lookup-enabled]")?.classList.contains("on") !== false, updated_at: new Date().toISOString() };
-    if (payload.used_slots > payload.total_slots) return toast("찬 슬롯 수는 최대 슬롯 수보다 클 수 없습니다.");
+    const payload = { profile_image_url: currentProfileImageUrl, profile_image_scale: Number(document.querySelector("[data-profile-scale]").value), profile_image_x: Number(document.querySelector("[data-profile-x]").value), profile_image_y: Number(document.querySelector("[data-profile-y]").value), status_lookup_enabled: document.querySelector("[data-status-lookup-enabled]")?.classList.contains("on") !== false, updated_at: new Date().toISOString() };
     let { error } = await client.from("site_settings").update(payload).eq("id", 1);
     let profileAdjustmentsLocalOnly = false;
     if (error && /profile_image_(scale|x|y)|schema cache|column/i.test(error.message || "")) {
       const compatiblePayload = {
-        slot_status: payload.slot_status,
-        total_slots: payload.total_slots,
-        used_slots: payload.used_slots,
-        average_period: payload.average_period,
         profile_image_url: payload.profile_image_url,
+        status_lookup_enabled: payload.status_lookup_enabled,
         updated_at: payload.updated_at,
       };
       ({ error } = await client.from("site_settings").update(compatiblePayload).eq("id", 1));
@@ -238,10 +327,7 @@
     }
     if (error && /profile_image_url|schema cache|column/i.test(error.message || "")) {
       const basePayload = {
-        slot_status: payload.slot_status,
-        total_slots: payload.total_slots,
-        used_slots: payload.used_slots,
-        average_period: payload.average_period,
+        status_lookup_enabled: payload.status_lookup_enabled,
         updated_at: payload.updated_at,
       };
       ({ error } = await client.from("site_settings").update(basePayload).eq("id", 1));
@@ -256,8 +342,23 @@
     }
     try { localStorage.setItem("nine-profile-settings", JSON.stringify({ ...payload, profile_local_override: false })); } catch (storageError) {}
     window.NineSupabase?.applyProfileSettings?.(payload);
-    await log("슬롯 수동 변경", `${payload.used_slots}/${payload.total_slots}`);
+    await log("홈페이지 설정 변경", "프로필 및 상태 조회 설정");
     toast(profileAdjustmentsLocalOnly ? "기본 설정은 저장했습니다. 프로필 조절값은 현재 브라우저에 적용됩니다." : "설정을 저장했습니다.");
+  });
+
+  document.querySelector("[data-save-slots]")?.addEventListener("click", async () => {
+    const payload = {
+      slot_status: document.querySelector("#status")?.value || "접수중",
+      total_slots: Number(document.querySelector("#slots")?.value || 0),
+      used_slots: Number(document.querySelector("#used")?.value || 0),
+      average_period: document.querySelector("#period")?.value || "",
+      updated_at: new Date().toISOString(),
+    };
+    if (payload.used_slots > payload.total_slots) return toast("찬 슬롯 수는 최대 슬롯 수보다 클 수 없습니다.");
+    const { error } = await client.from("site_settings").update(payload).eq("id", 1);
+    if (error) return toast("슬롯 설정을 저장하지 못했습니다.");
+    await log("슬롯 수동 변경", `${payload.used_slots}/${payload.total_slots} · ${payload.slot_status}`);
+    toast("슬롯 설정을 저장했습니다.");
   });
   document.querySelector("[data-profile-image]")?.addEventListener("change", (event) => {
     const file = event.target.files?.[0];
@@ -272,7 +373,8 @@
   if (page === "requests") loadRequests();
   if (page === "notices") loadNotices();
   if (page === "gallery") loadGallery();
-  if (page === "settings") loadSettings();
+  if (page === "settings" || page === "slots") loadSettings();
   if (page === "logs") loadLogs();
   if (page === "chats") loadChats();
+  if (page === "inquiries") loadInquiries();
 })();

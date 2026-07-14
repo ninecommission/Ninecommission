@@ -26,6 +26,18 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg>
         갤러리 관리
       </a>
+      <a href="admin-inquiries.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+        문의 관리
+      </a>
+      <a href="admin-chats.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.3 9.4 9.4 0 0 1-3.4-.6L3 21l1.8-4.5A7.7 7.7 0 0 1 3 11.5a8.5 8.5 0 0 1 9-8.3 8.5 8.5 0 0 1 9 8.3"></path></svg>
+        채팅 관리
+      </a>
+      <a href="admin-slots.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+        슬롯 관리
+      </a>
       <a href="admin-settings.html">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5z"></path><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.65V21a2 2 0 1 1-4 0v-.09A1.8 1.8 0 0 0 8.8 19.3a1.8 1.8 0 0 0-1.98.36l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.8 1.8 0 0 0 4.35 15a1.8 1.8 0 0 0-1.65-1.1H2.6a2 2 0 1 1 0-4h.09A1.8 1.8 0 0 0 4.3 8.8a1.8 1.8 0 0 0-.36-1.98l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.8 1.8 0 0 0 8.8 4.35a1.8 1.8 0 0 0 1.1-1.65V2.6a2 2 0 1 1 4 0v.09A1.8 1.8 0 0 0 15 4.3a1.8 1.8 0 0 0 1.98-.36l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.8 1.8 0 0 0 19.65 8.8a1.8 1.8 0 0 0 1.65 1.1h.1a2 2 0 1 1 0 4h-.09A1.8 1.8 0 0 0 19.4 15z"></path></svg>
         설정
@@ -73,7 +85,7 @@
     </section>
     <section class="metric-card orange">
       <span class="metric-icon">○</span>
-      <div><p>찬 슬롯</p><strong>0 / 0</strong><small>현재 찬 슬롯</small></div>
+      <div><p>슬롯 현황</p><strong>0 / 0</strong><small>현재 찬 슬롯</small></div>
     </section>
 
     <section class="panel requests-panel" id="requests">
@@ -89,29 +101,19 @@
       <div class="work-list"><p class="empty-state">최근 신청이 없습니다.</p></div>
     </section>
 
-    <section class="panel slot-panel">
-      <header class="panel-head"><h2>슬롯 현황</h2><a href="admin-settings.html">설정하기 →</a></header>
-      <strong>0 / 0</strong>
-      <p>찬 슬롯 / 최대 슬롯</p>
-      <div class="slot-icons"></div>
-      <div class="slot-bar"><span style="width: 0"></span></div>
-      <small>0% 사용 중</small>
+    <section class="panel chat-dashboard-panel" id="chats">
+      <header class="panel-head"><h2>채팅 관리</h2><a href="admin-chats.html">전체 보기 →</a></header>
+      <ul class="dashboard-feed" data-admin-chats><li><span>접수된 채팅이 없습니다.</span></li></ul>
     </section>
 
     <section class="panel notice-panel" id="notices">
-      <header class="panel-head"><h2>공지 관리</h2><a href="admin-notices.html">+ 새 공지</a></header>
-      <ul data-admin-notices><li><span>등록된 공지가 없습니다.</span></li></ul>
+      <header class="panel-head"><h2>공지 관리</h2><a href="admin-notices.html">전체 보기 →</a></header>
+      <ul class="dashboard-feed" data-admin-notices><li><span>등록된 공지가 없습니다.</span></li></ul>
     </section>
 
-    <section class="panel gallery-admin" id="gallery">
-      <header class="panel-head"><h2>갤러리 관리</h2><a href="admin-gallery.html">+ 새 업로드</a></header>
-      <div class="gallery-admin-grid">
-        <figure><div class="sample a"></div><figcaption>아이콘</figcaption></figure>
-        <figure><div class="sample b"></div><figcaption>상반신</figcaption></figure>
-        <figure><div class="sample c"></div><figcaption>전신</figcaption></figure>
-        <figure><div class="sample d"></div><figcaption>Bust Up</figcaption></figure>
-        <a class="gallery-upload-link" href="admin-gallery.html">+<span>업로드</span></a>
-      </div>
+    <section class="panel inquiry-panel" id="inquiries">
+      <header class="panel-head"><h2>문의 관리</h2><a href="admin-inquiries.html">전체 보기 →</a></header>
+      <ul class="dashboard-feed" data-admin-inquiries><li><span>접수된 문의가 없습니다.</span></li></ul>
     </section>
 
     <section class="panel system-panel" id="settings">

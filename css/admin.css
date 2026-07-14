@@ -56,6 +56,7 @@ svg {
   flex-direction: column;
   width: 250px;
   padding: 30px 20px 24px;
+  overflow-y: auto;
   color: white;
   background:
     radial-gradient(circle at 70% 8%, rgba(72, 118, 255, 0.2), transparent 28%),
@@ -393,11 +394,20 @@ svg {
 
 .requests-panel,
 .progress-panel {
-  grid-column: span 5;
+  grid-column: span 4;
 }
 
 .slot-panel {
   grid-column: span 2;
+}
+
+.requests-panel,
+.progress-panel,
+.chat-dashboard-panel,
+.slot-panel {
+  height: 320px;
+  min-height: 320px;
+  overflow: auto;
 }
 
 table {
@@ -547,11 +557,69 @@ td:first-child {
 
 .notice-panel,
 .system-panel {
-  grid-column: span 3;
+  grid-column: span 4;
 }
 
 .gallery-admin {
   grid-column: span 6;
+}
+
+.inquiry-panel {
+  grid-column: span 4;
+}
+
+.chat-dashboard-panel {
+  grid-column: span 4;
+}
+
+.notice-panel,
+.inquiry-panel,
+.system-panel {
+  height: 290px;
+  min-height: 290px;
+  overflow: auto;
+}
+
+.dashboard-feed {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dashboard-feed li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 13px 14px;
+  border: 1px solid #edf1f7;
+  border-radius: 8px;
+}
+
+.dashboard-feed span,
+.dashboard-feed strong,
+.dashboard-feed small {
+  min-width: 0;
+}
+
+.dashboard-feed strong,
+.dashboard-feed small {
+  display: block;
+}
+
+.dashboard-feed small {
+  overflow: hidden;
+  margin-top: 4px;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-feed time {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .notice-panel ul {
@@ -666,15 +734,20 @@ td:first-child {
   .hero-card,
   .quick-card,
   .dashboard-site-button,
-  .requests-panel,
-  .progress-panel,
   .gallery-admin {
     grid-column: 1 / -1;
   }
 
-  .metric-card,
+  .requests-panel,
+  .progress-panel,
+  .chat-dashboard-panel,
   .notice-panel,
-  .system-panel,
+  .inquiry-panel,
+  .system-panel {
+    grid-column: span 2;
+  }
+
+  .metric-card,
   .slot-panel {
     grid-column: span 3;
   }
@@ -695,6 +768,18 @@ td:first-child {
   .system-panel,
   .slot-panel {
     grid-column: 1 / -1;
+  }
+
+  .requests-panel,
+  .progress-panel,
+  .chat-dashboard-panel,
+  .slot-panel,
+  .notice-panel,
+  .inquiry-panel,
+  .system-panel {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
   }
 
   .hero-card {

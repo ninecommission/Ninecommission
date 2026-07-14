@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>커미션 신청 | NINE Commission</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=20260714-profile" />
   <link rel="stylesheet" href="css/apply.css" />
 </head>
 <body>
@@ -30,11 +30,11 @@
         <form class="commission-apply-form" data-supabase-form="commission">
           <label>
             이름 / 닉네임
-            <input type="text" name="name" placeholder="이름 / 닉네임" />
+            <input type="text" name="name" placeholder="이름 / 닉네임" required />
           </label>
           <label>
             이메일
-            <input type="email" name="email" placeholder="이메일 (답변 받을 주소)" />
+            <input type="email" name="email" placeholder="이메일 (답변 받을 주소)" required />
           </label>
           <label>
             신청 인원 수
@@ -46,7 +46,7 @@
           </label>
           <label>
             신청 타입
-            <select name="type">
+            <select name="type" required>
               <option value="">신청 타입을 선택해주세요</option>
               <option value="SD">SD</option>
               <option value="LD">LD</option>
@@ -58,14 +58,14 @@
             <input type="file" name="reference" accept="image/*" multiple />
             <span aria-hidden="true">▧</span>
             <strong>참고 이미지 업로드</strong>
-            <small>클릭하거나 파일을 드래그해주세요</small>
+            <small data-reference-count>선택된 이미지 없음 · 여러 번 나누어 선택 가능</small>
           </label>
           <label>
             내용
-            <textarea name="message" rows="8" placeholder="캐릭터 설정, 외형 설명, 성격, 포즈, 분위기 등을 작성해주세요."></textarea>
+            <textarea name="message" rows="8" placeholder="캐릭터 설정, 외형 설명, 성격, 포즈, 분위기 등을 작성해주세요." required></textarea>
           </label>
           <label class="agree-row">
-            <input type="checkbox" name="agree" />
+            <input type="checkbox" name="agree" required />
             신청 내용을 확인했으며 커미션 안내 사항에 동의합니다.
           </label>
           <button class="primary-button" type="submit">커미션 신청하기</button>
@@ -80,7 +80,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/supabase-app.js"></script>
+  <script src="js/supabase-app.js?v=20260714-rest"></script>
   <script src="chat.js?v=20260712-reset"></script>
 </body>
 </html>

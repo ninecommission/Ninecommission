@@ -10,6 +10,7 @@
     window.supabase;
 
   const client = isReady ? window.supabase.createClient(config.url, config.anonKey) : null;
+  let currentSlotStatus = "";
 
   function getClient() {
     return client;
@@ -33,6 +34,26 @@
     status.dataset.type = type;
   }
 
+  function applyCommissionAvailability(slotStatus) {
+    currentSlotStatus = slotStatus;
+    const isResting = slotStatus === "휴식중";
+    document.querySelectorAll('a[href="apply.html"]').forEach((link) => {
+      link.classList.toggle("commission-closed", isResting);
+      if (isResting) link.setAttribute("aria-disabled", "true");
+      else link.removeAttribute("aria-disabled");
+    });
+
+    const form = document.querySelector("[data-supabase-form='commission']");
+    if (!form) return;
+    form.classList.toggle("is-closed", isResting);
+    form.querySelectorAll("input, select, textarea, button[type='submit']").forEach((control) => {
+      control.disabled = isResting;
+    });
+    const submitButton = form.querySelector("button[type='submit']");
+    if (submitButton) submitButton.textContent = isResting ? "현재 휴식중입니다" : "커미션 신청하기";
+    if (isResting) setStatus(form, "현재 휴식중이므로 커미션 신청을 받고 있지 않습니다.", "error");
+  }
+
   async function insert(table, payload) {
     if (!client) {
       return { data: null, error: new Error("Supabase is not configured.") };
@@ -50,8 +71,9 @@
       state = fallback.data;
     }
     if (!state) return;
-    const statusLabels = { OPEN: "접수중", CLOSED: "준비중", REST: "접수중", "쉬는 중": "접수중" };
+    const statusLabels = { OPEN: "접수중", CLOSED: "준비중", REST: "휴식중", "쉬는 중": "휴식중" };
     const slotStatus = statusLabels[state.slot_status] || state.slot_status;
+    applyCommissionAvailability(slotStatus);
     document.querySelectorAll(".status-card").forEach((card) => {
       const status = card.querySelector(".status-top span");
       const count = card.querySelector(":scope > strong");
@@ -60,6 +82,7 @@
       if (status) {
         status.textContent = slotStatus;
         status.classList.toggle("status-preparing", slotStatus === "준비중");
+        status.classList.toggle("status-resting", slotStatus === "휴식중");
       }
       if (count) count.textContent = `${state.used_slots} / ${state.total_slots}`;
       if (bar) bar.style.width = state.total_slots ? `${(state.used_slots / state.total_slots) * 100}%` : "0%";
@@ -73,6 +96,12 @@
     document.querySelectorAll('a[href="status.html"]').forEach((link) => {
       link.hidden = state.status_lookup_enabled === false;
     });
+    const lookupForm = document.querySelector("[data-status-lookup-form]");
+    const lookupMessage = document.querySelector("[data-status-lookup-message]");
+    if (lookupForm && state.status_lookup_enabled === false) {
+      lookupForm.hidden = true;
+      if (lookupMessage) lookupMessage.textContent = "현재 진행 상황 조회를 사용하지 않습니다.";
+    }
     const cachedProfile = getCachedProfile();
     if (cachedProfile?.profile_local_override) {
       applyProfileSettings(cachedProfile);
@@ -172,13 +201,51 @@
       return;
     }
 
+    const referenceInput = form.querySelector('input[name="reference"]');
+    const referenceCount = form.querySelector("[data-reference-count]");
+    let selectedReferenceFiles = [];
+    const emptyReferenceText = "선택된 이미지 없음 · 여러 번 나누어 선택 가능";
+
+    referenceInput?.addEventListener("change", () => {
+      const incomingFiles = Array.from(referenceInput.files || []);
+      const selectedKeys = new Set(selectedReferenceFiles.map((file) => `${file.name}:${file.size}:${file.lastModified}`));
+      incomingFiles.forEach((file) => {
+        const key = `${file.name}:${file.size}:${file.lastModified}`;
+        if (!selectedKeys.has(key)) {
+          selectedKeys.add(key);
+          selectedReferenceFiles.push(file);
+        }
+      });
+
+      if (typeof DataTransfer !== "undefined") {
+        try {
+          const transfer = new DataTransfer();
+          selectedReferenceFiles.forEach((file) => transfer.items.add(file));
+          referenceInput.files = transfer.files;
+        } catch (error) {
+          // Some mobile browsers do not allow replacing FileList. The saved array still uploads every selected file.
+        }
+      }
+
+      const count = selectedReferenceFiles.length;
+      if (referenceCount) {
+        referenceCount.textContent = count ? `${count}장 선택됨` : emptyReferenceText;
+      }
+    });
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (currentSlotStatus === "휴식중") {
+        setStatus(form, "현재 휴식중이므로 커미션 신청을 받을 수 없습니다.", "error");
+        return;
+      }
       const values = getFormData(form);
 
       setStatus(form, "신청을 저장하는 중입니다.", "loading");
 
-      const files = Array.from(form.querySelector('[name="reference"]')?.files || []);
+      const files = selectedReferenceFiles.length
+        ? selectedReferenceFiles
+        : Array.from(referenceInput?.files || []);
       const referencePaths = [];
       for (const file of files) {
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
@@ -209,6 +276,8 @@
       }
 
       form.reset();
+      selectedReferenceFiles = [];
+      if (referenceCount) referenceCount.textContent = emptyReferenceText;
       setStatus(form, "신청이 저장되었습니다.", "success");
       loadPublicState();
     });
@@ -242,6 +311,35 @@
     });
   }
 
+  function bindStatusLookup() {
+    const form = document.querySelector("[data-status-lookup-form]");
+    if (!form) return;
+    const message = document.querySelector("[data-status-lookup-message]");
+    const result = document.querySelector("[data-status-lookup-result]");
+    const statusLabels = { received: "접수 완료", waiting: "입금 대기", progress: "진행 중", done: "완료" };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      result.hidden = true;
+      message.textContent = "신청 정보를 확인하는 중입니다.";
+      if (!client) { message.textContent = "조회 서비스에 연결하지 못했습니다."; return; }
+      const values = getFormData(form);
+      const { data, error } = await client.rpc("lookup_commission_status", {
+        p_request_id: Number(values.request_id),
+        p_email: values.email || "",
+      });
+      if (error) { message.textContent = "조회하지 못했습니다. 잠시 후 다시 시도해주세요."; return; }
+      const item = Array.isArray(data) ? data[0] : data;
+      if (!item) { message.textContent = "일치하는 신청을 찾지 못했습니다. 신청 번호와 이메일을 확인해주세요."; return; }
+      document.querySelector("[data-status-result-id]").textContent = `#${item.request_id}`;
+      document.querySelector("[data-status-result-type]").textContent = item.request_type || "-";
+      document.querySelector("[data-status-result-status]").textContent = statusLabels[item.status] || item.status || "-";
+      document.querySelector("[data-status-result-date]").textContent = new Date(item.created_at).toLocaleDateString("ko-KR");
+      message.textContent = "신청 상태를 확인했습니다.";
+      result.hidden = false;
+    });
+  }
+
   window.NineSupabase = {
     getClient,
     insert,
@@ -249,11 +347,13 @@
     applyProfileSettings,
   };
 
+  loadCachedProfile();
   document.addEventListener("DOMContentLoaded", () => {
     loadCachedProfile();
     setTimeout(loadCachedProfile, 0);
     bindApplyForm();
     bindInquiryForm();
+    bindStatusLookup();
     loadPublicState();
     loadPublicNotices();
     bindNoticeModal();
