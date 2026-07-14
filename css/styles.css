@@ -550,6 +550,7 @@ a.commission-closed {
 }
 
 .chat-message.is-deleted {
+  justify-self: end;
   color: #7a849f;
   font-style: italic;
   background: #eef3fb;
