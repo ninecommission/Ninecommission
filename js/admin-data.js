@@ -125,7 +125,7 @@
     const list = document.querySelector("[data-chat-list]"); if (!list) return;
     const { data, error } = await client.from("chat_messages").select("id,created_at,page_path,sender,message").order("created_at", { ascending: false });
     if (error) return toast("채팅 문의를 불러오지 못했습니다.");
-    list.innerHTML = (data || []).map((item) => `<article class="chat-manage-item" data-filter-row><div><p>${esc(item.message)}</p><div class="chat-manage-meta"><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>접수 페이지: ${esc(item.page_path || "-")}</span></div></div><button class="admin-button danger" data-chat-delete="${item.id}">삭제</button></article>`).join("");
+    list.innerHTML = (data || []).map((item) => `<article class="chat-manage-item" data-filter-row><div><p>${esc(item.message)}</p><div class="chat-manage-meta"><span>발신 코드: <strong>${esc(item.sender || "기존 방문자")}</strong></span><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>접수 페이지: ${esc(item.page_path || "-")}</span></div></div><button class="admin-button danger" data-chat-delete="${item.id}">삭제</button></article>`).join("");
     const empty = document.querySelector("[data-chat-empty]"); if (empty) empty.hidden = Boolean(data?.length);
     const clear = document.querySelector("[data-clear-chats]"); if (clear) clear.disabled = !data?.length;
   }

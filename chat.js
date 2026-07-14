@@ -1,7 +1,7 @@
 (function () {
   const STORAGE_KEY = "nine-commission-chat-v2";
   const OPEN_KEY = "nine-commission-chat-open-v2";
-  const RESET_KEY = "nine-commission-chat-reset-20260712";
+  const RESET_KEY = "nine-commission-chat-reset-20260715";
 
   const defaultMessages = [
     {
@@ -63,6 +63,26 @@
     writeStorage(STORAGE_KEY, JSON.stringify(messages));
   }
 
+  function getVisitorCode() {
+    const isMobile = window.matchMedia("(max-width: 760px)").matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    const prefix = isMobile ? "M" : "P";
+    const key = `nine-commission-chat-visitor-${prefix}`;
+    const savedCode = readStorage(key);
+
+    if (savedCode && new RegExp(`^${prefix}-[A-Z0-9]{6}$`).test(savedCode)) {
+      return savedCode;
+    }
+
+    const randomPart = (window.crypto?.randomUUID?.() || `${Date.now()}${Math.random()}`)
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .slice(-6)
+      .toUpperCase()
+      .padStart(6, "0");
+    const code = `${prefix}-${randomPart}`;
+    writeStorage(key, code);
+    return code;
+  }
+
   function createIcon(path) {
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${path}</svg>`;
   }
@@ -112,6 +132,7 @@
     const form = widget.querySelector(".chat-form");
     const input = widget.querySelector("#chat-message");
     const messageList = widget.querySelector("[data-chat-messages]");
+    const visitorCode = getVisitorCode();
     let messages = loadMessages();
 
     function setOpen(open) {
@@ -145,7 +166,7 @@
       if (window.NineSupabase && window.NineSupabase.isReady) {
         window.NineSupabase.insert("chat_messages", {
           page_path: window.location.pathname,
-          sender: "visitor",
+          sender: visitorCode,
           message: text,
         });
       }
