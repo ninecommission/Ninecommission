@@ -117,9 +117,6 @@ begin
     raise exception 'invalid inquiry owner key';
   end if;
 
-  if coalesce(p_locked, false) and length(trim(coalesce(p_lock_key, ''))) = 0 then
-    raise exception 'lock key is required';
-  end if;
 
   insert into public.inquiries (
     inquiry_code,
@@ -137,11 +134,7 @@ begin
     coalesce(p_contact, ''),
     coalesce(p_message, ''),
     coalesce(p_locked, false),
-    case
-      when coalesce(p_locked, false)
-      then md5(coalesce(p_lock_key, ''))
-      else null
-    end
+    null
   );
 
   return v_code;
@@ -171,11 +164,11 @@ as $$
   select
     i.inquiry_code,
     i.created_at,
-    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.name else '' end as name,
-    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.contact else '' end as contact,
-    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.message else '' end as message,
+    i.name,
+    i.contact,
+    i.message,
     i.locked,
-    (not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, ''))) as can_view
+    true as can_view
   from public.inquiries i
   where p_owner_key ~ '^[A-Za-z0-9-]{12,}$'
     and i.owner_key = p_owner_key
@@ -205,14 +198,13 @@ as $$
   select
     i.inquiry_code,
     i.created_at,
-    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.name else '' end as name,
-    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.contact else '' end as contact,
-    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.message else '' end as message,
+    i.name,
+    i.contact,
+    i.message,
     i.locked,
-    (not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, ''))) as can_view
+    true as can_view
   from public.inquiries i
   where upper(i.inquiry_code) = upper(trim(coalesce(p_inquiry_code, '')))
-    and (i.locked = false or i.lock_key_hash = md5(coalesce(p_lock_key, '')))
   order by i.created_at desc
   limit 1;
 $$;

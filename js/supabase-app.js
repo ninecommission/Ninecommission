@@ -151,7 +151,7 @@
       p_message: payload.message,
       p_owner_key: payload.owner_key,
       p_locked: payload.locked,
-      p_lock_key: payload.lock_key,
+      p_lock_key: "",
     });
 
     if (!rpcResult.error) {
@@ -169,14 +169,13 @@
     });
   }
 
-  async function fetchInquiryByCode(inquiryCode, lockKey = "") {
+  async function fetchInquiryByCode(inquiryCode) {
     if (!client) {
       return { data: null, error: new Error("Supabase is not configured.") };
     }
 
     return client.rpc("get_inquiry_by_code", {
       p_inquiry_code: inquiryCode,
-      p_lock_key: lockKey,
     });
   }
 
@@ -509,31 +508,11 @@
       return;
     }
     const lockToggle = form.querySelector("[data-inquiry-lock-toggle]");
-    const lockField = form.querySelector("[data-inquiry-lock-field]");
-    const lockInput = lockField?.querySelector("input");
-
-    const syncLockField = () => {
-      const locked = Boolean(lockToggle?.checked);
-      if (lockField) lockField.hidden = !locked;
-      if (lockInput) {
-        lockInput.required = locked;
-        if (!locked) lockInput.value = "";
-      }
-    };
-
-    lockToggle?.addEventListener("change", syncLockField);
-    syncLockField();
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const values = getFormData(form);
       const locked = Boolean(values.locked);
-      const lockKey = values.lock_key || "";
-
-      if (locked && !lockKey.trim()) {
-        setStatus(form, "잠금 문의는 비밀번호를 입력해 주세요.", "error");
-        return;
-      }
 
       setStatus(form, "문의를 저장하는 중입니다.", "loading");
 
@@ -543,7 +522,6 @@
         message: values.message || "",
         owner_key: getInquiryOwnerKey(),
         locked,
-        lock_key: lockKey,
       });
 
       if (error) {
@@ -552,15 +530,12 @@
       }
 
       form.reset();
-      syncLockField();
       if (data?.inquiry_code) {
         setStatusWithCode(form, "문의가 저장되었습니다. 문의 코드:", data.inquiry_code, "success");
         const lookupForm = document.querySelector("[data-inquiry-lookup-form]");
         const codeInput = lookupForm?.querySelector('input[name="inquiry_code"]');
-        const lockInput = lookupForm?.querySelector('input[name="lock_key"]');
         if (codeInput) codeInput.value = data.inquiry_code;
-        if (lockInput) lockInput.value = lockKey;
-        if (locked) loadInquiryByCode(data.inquiry_code, lockKey);
+        if (locked) loadInquiryByCode(data.inquiry_code);
         else loadPublicInquiries();
       } else {
         setStatus(form, "문의가 저장되었습니다.", "success");
@@ -570,13 +545,13 @@
     document.querySelector("[data-inquiry-lookup-form]")?.addEventListener("submit", (event) => {
       event.preventDefault();
       const values = getFormData(event.currentTarget);
-      loadInquiryByCode(values.inquiry_code || "", values.lock_key || "");
+      loadInquiryByCode(values.inquiry_code || "");
     });
 
     loadPublicInquiries();
   }
 
-  async function loadInquiryByCode(inquiryCode, lockKey = "") {
+  async function loadInquiryByCode(inquiryCode) {
     const list = document.querySelector("[data-private-inquiry-result]");
     const empty = document.querySelector("[data-private-inquiry-empty]");
     if (!list || !empty || !client) return;
@@ -589,7 +564,7 @@
       return;
     }
 
-    const { data, error } = await fetchInquiryByCode(code, lockKey);
+    const { data, error } = await fetchInquiryByCode(code);
     if (error) {
       list.innerHTML = "";
       empty.hidden = false;
@@ -601,7 +576,7 @@
     if (!item) {
       list.innerHTML = "";
       empty.hidden = false;
-      empty.textContent = "일치하는 문의 코드 또는 비밀번호를 찾지 못했습니다.";
+      empty.textContent = "일치하는 문의 코드를 찾지 못했습니다.";
       return;
     }
 
@@ -616,7 +591,7 @@
     const canView = item.can_view !== false;
     const locked = Boolean(item.locked);
     const code = item.inquiry_code || "문의";
-    return `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(code)}</h3><small>${locked ? "잠금 문의" : "공개 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "잠금 비밀번호를 입력하면 문의 내용을 볼 수 있습니다."}</p></article>`;
+    return `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(code)}</h3><small>${locked ? "잠금 문의" : "공개 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "문의 코드를 입력하면 내용을 볼 수 있습니다."}</p></article>`;
   }
 
   async function loadPublicInquiries() {

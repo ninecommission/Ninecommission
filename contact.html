@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>문의하기 | NINE Commission</title>
   <link rel="stylesheet" href="css/styles.css?v=20260715-request-code" />
-  <link rel="stylesheet" href="css/contact.css?v=20260716-public-inquiries" />
+  <link rel="stylesheet" href="css/contact.css?v=20260716-inquiry-code-only" />
 </head>
 <body>
   <main class="layout">
@@ -36,10 +36,6 @@
             <input type="checkbox" name="locked" data-inquiry-lock-toggle />
             문의 내역 잠금
           </label>
-          <label class="inquiry-lock-field" data-inquiry-lock-field hidden>
-            잠금 비밀번호
-            <input type="password" name="lock_key" placeholder="내 문의 내역을 볼 때 사용할 비밀번호" autocomplete="new-password" />
-          </label>
           <button class="primary-button" type="submit">문의 보내기</button>
         </form>
       </section>
@@ -65,7 +61,6 @@
           <h2 class="panel-heading">문의 내역</h2>
           <form class="inquiry-lookup-form" data-inquiry-lookup-form>
             <input type="text" name="inquiry_code" placeholder="문의 코드" autocomplete="off" required />
-            <input type="password" name="lock_key" placeholder="잠금 비밀번호" autocomplete="current-password" />
             <button type="submit">조회</button>
           </form>
         </header>
@@ -77,7 +72,7 @@
         <div class="inquiry-list-group">
           <h3>잠금 문의 조회 결과</h3>
           <div class="my-inquiry-list" data-private-inquiry-result></div>
-          <p class="empty-inquiries" data-private-inquiry-empty>잠금 문의는 문의 코드와 비밀번호로 확인할 수 있습니다.</p>
+          <p class="empty-inquiries" data-private-inquiry-empty>잠금 문의는 문의 코드로 확인할 수 있습니다.</p>
         </div>
       </section>
     </section>
@@ -89,7 +84,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/supabase-app.js?v=20260716-code-only-status"></script>
+  <script src="js/supabase-app.js?v=20260716-inquiry-code-only"></script>
   <script src="chat.js?v=20260715-chat-clear-empty"></script>
 </body>
 </html>
