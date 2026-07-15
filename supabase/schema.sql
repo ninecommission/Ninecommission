@@ -65,8 +65,6 @@ create table if not exists public.inquiries (
   status text not null default 'new'
 );
 
-create extension if not exists pgcrypto;
-
 alter table public.inquiries add column if not exists inquiry_code text;
 alter table public.inquiries add column if not exists owner_key text not null default '';
 alter table public.inquiries add column if not exists locked boolean not null default false;
@@ -141,7 +139,7 @@ begin
     coalesce(p_locked, false),
     case
       when coalesce(p_locked, false)
-      then encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex')
+      then md5(coalesce(p_lock_key, ''))
       else null
     end
   );
@@ -173,11 +171,11 @@ as $$
   select
     i.inquiry_code,
     i.created_at,
-    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.name else '' end as name,
-    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.contact else '' end as contact,
-    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.message else '' end as message,
+    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.name else '' end as name,
+    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.contact else '' end as contact,
+    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.message else '' end as message,
     i.locked,
-    (not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex')) as can_view
+    (not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, ''))) as can_view
   from public.inquiries i
   where p_owner_key ~ '^[A-Za-z0-9-]{12,}$'
     and i.owner_key = p_owner_key
@@ -207,11 +205,11 @@ as $$
   select
     i.inquiry_code,
     i.created_at,
-    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.name else '' end as name,
-    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.contact else '' end as contact,
-    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.message else '' end as message,
+    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.name else '' end as name,
+    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.contact else '' end as contact,
+    case when not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, '')) then i.message else '' end as message,
     i.locked,
-    (not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex')) as can_view
+    (not i.locked or i.lock_key_hash = md5(coalesce(p_lock_key, ''))) as can_view
   from public.inquiries i
   where upper(i.inquiry_code) = upper(trim(coalesce(p_inquiry_code, '')))
   order by i.created_at desc
