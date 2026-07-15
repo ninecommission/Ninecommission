@@ -96,6 +96,9 @@
     form.querySelectorAll("input, select, textarea, button[type='submit']").forEach((control) => {
       control.disabled = isResting;
     });
+    form.querySelectorAll(".type-stepper button").forEach((control) => {
+      control.disabled = isResting;
+    });
     const submitButton = form.querySelector("button[type='submit']");
     if (submitButton) submitButton.textContent = isResting ? "현재 휴식중입니다" : "커미션 신청하기";
     if (isResting) setStatus(form, "현재 휴식중이므로 커미션 신청을 받고 있지 않습니다.", "error");
@@ -144,6 +147,51 @@
 
   function formatRequestCode(code) {
     return code ? String(code) : "";
+  }
+
+  function clampTypeQuantity(input, value) {
+    const min = Number(input.min || 0);
+    const max = Number(input.max || 99);
+    const number = Number.isFinite(Number(value)) ? Number(value) : min;
+    return Math.min(max, Math.max(min, Math.floor(number)));
+  }
+
+  function getCommissionTypeSummary(form) {
+    const items = Array.from(form.querySelectorAll("[data-type-label]"))
+      .map((input) => {
+        const count = clampTypeQuantity(input, input.value);
+        input.value = String(count);
+        return {
+          label: input.dataset.typeLabel,
+          count,
+        };
+      })
+      .filter((item) => item.count > 0);
+
+    return items.map((item) => `${item.label} ${item.count}개`).join(", ");
+  }
+
+  function bindTypeSteppers(form) {
+    form.querySelectorAll("[data-type-label]").forEach((input) => {
+      input.addEventListener("input", () => {
+        input.value = String(clampTypeQuantity(input, input.value));
+      });
+    });
+
+    form.addEventListener("click", (event) => {
+      const minusButton = event.target.closest("[data-type-minus]");
+      const plusButton = event.target.closest("[data-type-plus]");
+      if (!minusButton && !plusButton) return;
+
+      const inputId = minusButton?.dataset.typeMinus || plusButton?.dataset.typePlus;
+      const input = inputId ? document.getElementById(inputId) : null;
+      if (input && !form.contains(input)) return;
+      if (!input) return;
+
+      const change = plusButton ? 1 : -1;
+      input.value = String(clampTypeQuantity(input, Number(input.value) + change));
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
   }
 
   async function loadPublicState() {
@@ -289,6 +337,7 @@
     const referenceCount = form.querySelector("[data-reference-count]");
     let selectedReferenceFiles = [];
     const emptyReferenceText = "선택된 이미지 없음 · 여러 번 나누어 선택 가능";
+    bindTypeSteppers(form);
 
     referenceInput?.addEventListener("change", () => {
       const incomingFiles = Array.from(referenceInput.files || []);
@@ -324,6 +373,12 @@
         return;
       }
       const values = getFormData(form);
+      const requestTypeSummary = getCommissionTypeSummary(form);
+
+      if (!requestTypeSummary) {
+        setStatus(form, "신청 타입을 1개 이상 선택해주세요.", "error");
+        return;
+      }
 
       setStatus(form, "신청을 저장하는 중입니다.", "loading");
 
@@ -346,7 +401,7 @@
         name: values.name || "",
         email: values.email || "",
         contact: values.contact || "",
-        request_type: values.type || "",
+        request_type: requestTypeSummary,
         people: values.people || "",
         usage: values.usage || "",
         message: values.message || "",

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>커미션 신청 | NINE Commission</title>
   <link rel="stylesheet" href="css/styles.css?v=20260715-request-code" />
-  <link rel="stylesheet" href="css/apply.css?v=20260715-mobile-chat-header-14" />
+  <link rel="stylesheet" href="css/apply.css?v=20260716-type-quantity" />
 </head>
 <body>
   <main class="layout">
@@ -44,19 +44,44 @@
             사용 용도
             <input type="text" name="usage" placeholder="개인소장 / 방송 / 굿즈 등" />
           </label>
-          <label>
-            신청 타입
-            <select name="type" required>
-              <option value="">신청 타입을 선택해주세요</option>
-              <option value="SD">SD</option>
-              <option value="LD">LD</option>
-              <option value="background">배경 추가</option>
-              <option value="design">디자인 추가</option>
-            </select>
-          </label>
+          <fieldset class="type-quantity-field" data-type-quantity-group>
+            <legend>신청 타입</legend>
+            <div class="type-quantity-row">
+              <span>SD</span>
+              <div class="type-stepper">
+                <button type="button" data-type-minus="type_sd" aria-label="SD 수량 줄이기">-</button>
+                <input id="type_sd" name="type_sd" type="number" min="0" max="99" step="1" value="0" inputmode="numeric" data-type-label="SD" />
+                <button type="button" data-type-plus="type_sd" aria-label="SD 수량 늘리기">+</button>
+              </div>
+            </div>
+            <div class="type-quantity-row">
+              <span>LD</span>
+              <div class="type-stepper">
+                <button type="button" data-type-minus="type_ld" aria-label="LD 수량 줄이기">-</button>
+                <input id="type_ld" name="type_ld" type="number" min="0" max="99" step="1" value="0" inputmode="numeric" data-type-label="LD" />
+                <button type="button" data-type-plus="type_ld" aria-label="LD 수량 늘리기">+</button>
+              </div>
+            </div>
+            <div class="type-quantity-row">
+              <span>배경 추가</span>
+              <div class="type-stepper">
+                <button type="button" data-type-minus="type_background" aria-label="배경 추가 수량 줄이기">-</button>
+                <input id="type_background" name="type_background" type="number" min="0" max="99" step="1" value="0" inputmode="numeric" data-type-label="배경 추가" />
+                <button type="button" data-type-plus="type_background" aria-label="배경 추가 수량 늘리기">+</button>
+              </div>
+            </div>
+            <div class="type-quantity-row">
+              <span>디자인 추가</span>
+              <div class="type-stepper">
+                <button type="button" data-type-minus="type_design" aria-label="디자인 추가 수량 줄이기">-</button>
+                <input id="type_design" name="type_design" type="number" min="0" max="99" step="1" value="0" inputmode="numeric" data-type-label="디자인 추가" />
+                <button type="button" data-type-plus="type_design" aria-label="디자인 추가 수량 늘리기">+</button>
+              </div>
+            </div>
+          </fieldset>
           <label class="upload-box">
             <input type="file" name="reference" accept="image/*" multiple />
-            <span aria-hidden="true">▧</span>
+            <span aria-hidden="true">🖼️</span>
             <strong>참고 이미지 업로드</strong>
             <small data-reference-count>선택된 이미지 없음 · 여러 번 나누어 선택 가능</small>
           </label>
@@ -80,7 +105,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/supabase-app.js?v=20260715-random-request-code"></script>
+  <script src="js/supabase-app.js?v=20260716-type-quantity"></script>
   <script src="chat.js?v=20260715-chat-clear-empty"></script>
 </body>
 </html>

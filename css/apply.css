@@ -55,6 +55,83 @@
   color: var(--muted);
 }
 
+.type-quantity-field {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.type-quantity-field legend {
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.type-quantity-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 10px 12px;
+  border: 1px solid #c9d7fb;
+  border-radius: 8px;
+  background: white;
+}
+
+.type-quantity-row > span {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.type-stepper {
+  display: grid;
+  grid-template-columns: 36px 54px 36px;
+  align-items: center;
+  gap: 6px;
+}
+
+.type-stepper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #c9d7fb;
+  border-radius: 8px;
+  color: var(--blue);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  background: #f6f9ff;
+  cursor: pointer;
+}
+
+.type-stepper button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.type-stepper input {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 4px;
+  text-align: center;
+  font-weight: 900;
+  appearance: textfield;
+}
+
+.type-stepper input::-webkit-outer-spin-button,
+.type-stepper input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
 .upload-box {
   justify-items: center;
   gap: 4px;
@@ -73,7 +150,7 @@
 
 .upload-box span {
   color: var(--blue);
-  font-size: 22px;
+  font-size: 28px;
   line-height: 1;
 }
 
