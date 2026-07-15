@@ -1,7 +1,8 @@
 .hero,
 .sample-card,
 .notice-card,
-.guide-card {
+.guide-card,
+.apply-card {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
@@ -177,12 +178,13 @@
 
 .info-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   gap: 20px;
 }
 
 .notice-card,
-.guide-card {
+.guide-card,
+.apply-card {
   padding: 26px 24px;
 }
 
@@ -190,12 +192,14 @@
   padding: 24px 26px;
 }
 
-.guide-card {
+.guide-card,
+.apply-card {
   padding: 28px 30px;
 }
 
 .notice-card h2,
-.guide-card h2 {
+.guide-card h2,
+.apply-card h2 {
   margin: 0;
   font-size: 18px;
 }
@@ -298,7 +302,8 @@ time {
   background: white;
 }
 
-.guide-card {
+.guide-card,
+.apply-card {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -307,7 +312,8 @@ time {
   background: #edf5ff;
 }
 
-.guide-card > p:not(.eyebrow) {
+.guide-card > p:not(.eyebrow),
+.apply-card > p:not(.eyebrow) {
   margin: 10px 0 20px;
   color: var(--muted);
   font-size: 14px;
@@ -329,11 +335,17 @@ time {
   stroke-width: 1.8;
 }
 
-.guide-card p {
+.guide-card p,
+.apply-card p {
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
+}
+
+.apply-card h2:empty,
+.apply-card p:empty {
+  display: none;
 }
 
 @media (max-width: 760px) {
@@ -405,6 +417,10 @@ time {
   }
 
   .notice-card {
+    display: none;
+  }
+
+  .apply-card {
     display: none;
   }
 
