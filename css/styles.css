@@ -945,12 +945,41 @@ a.commission-closed {
     background: #f6f9ff;
   }
 
+  .profile-card:has(.side-menu) > .contact-card {
+    display: none;
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
+    border-color: #d5e1ff;
+    border-radius: 8px;
+    background: #fff;
+  }
+
   .profile-card:has(.side-menu).is-open .side-menu {
     display: grid;
   }
 
   .profile-card:has(.side-menu).is-open > .status-card {
     display: block;
+  }
+
+  .profile-card:has(.side-menu).is-open > .contact-card {
+    display: grid;
+  }
+
+  .profile-card:has(.side-menu) > .contact-card .contact-links {
+    margin-bottom: 0;
+  }
+
+  .profile-card:has(.side-menu) > .contact-card .contact-links a {
+    width: 36px;
+    height: 36px;
+  }
+
+  .profile-card:has(.side-menu) > .contact-card .primary-button,
+  .profile-card:has(.side-menu) > .contact-card .secondary-button {
+    min-height: 38px;
+    font-size: 12px;
   }
 
   .profile-card:has(.side-menu) > .status-card h2 {

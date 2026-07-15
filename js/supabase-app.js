@@ -21,7 +21,9 @@
     if (!sidebar || sidebar.querySelector("[data-mobile-sidebar-toggle]")) return;
     const sideColumn = sidebar.closest(".side-column");
     const statusCard = sideColumn?.querySelector(":scope > .status-card");
+    const contactCard = sideColumn?.querySelector(":scope > .contact-card");
     const statusPlaceholder = document.createComment("mobile status card position");
+    const contactPlaceholder = document.createComment("mobile contact card position");
     const mobileQuery = window.matchMedia("(max-width: 760px)");
 
     const button = document.createElement("button");
@@ -39,16 +41,23 @@
       button.setAttribute("aria-label", open ? "메뉴 접기" : "메뉴 펼치기");
     };
 
-    const syncStatusCard = () => {
-      if (!statusCard || !sideColumn) return;
+    const syncMobileSidebarCards = () => {
+      if (!sideColumn) return;
 
       if (mobileQuery.matches) {
-        if (!statusPlaceholder.parentNode) statusCard.before(statusPlaceholder);
-        if (statusCard.parentNode !== sidebar) sidebar.append(statusCard);
+        if (statusCard) {
+          if (!statusPlaceholder.parentNode) statusCard.before(statusPlaceholder);
+          if (statusCard.parentNode !== sidebar) sidebar.append(statusCard);
+        }
+        if (contactCard) {
+          if (!contactPlaceholder.parentNode) contactCard.before(contactPlaceholder);
+          if (contactCard.parentNode !== sidebar) sidebar.append(contactCard);
+        }
         return;
       }
 
       if (statusPlaceholder.parentNode) statusPlaceholder.replaceWith(statusCard);
+      if (contactPlaceholder.parentNode) contactPlaceholder.replaceWith(contactCard);
     };
 
     button.addEventListener("click", () => setOpen(!sidebar.classList.contains("is-open")));
@@ -58,8 +67,8 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") setOpen(false);
     });
-    mobileQuery.addEventListener?.("change", syncStatusCard);
-    syncStatusCard();
+    mobileQuery.addEventListener?.("change", syncMobileSidebarCards);
+    syncMobileSidebarCards();
   }
 
   function getFormData(form) {
