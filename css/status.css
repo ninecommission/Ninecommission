@@ -199,19 +199,30 @@
 
   .status-board article,
   .status-result div {
-    padding: 16px;
+    padding: 14px;
   }
 
   .status-lookup-form input {
-    min-height: 48px;
+    min-height: 46px;
     font-size: 16px;
   }
 
   .status-lookup-form .primary-button {
     width: 100%;
+    min-height: 44px;
+  }
+
+  .request-history-panel {
+    gap: 12px;
+  }
+
+  .request-history-item {
+    gap: 8px;
+    padding: 13px 14px;
   }
 
   .request-history-status {
     justify-self: start;
+    padding: 5px 9px;
   }
 }

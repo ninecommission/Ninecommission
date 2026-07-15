@@ -365,9 +365,9 @@ time {
   .sample-grid {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: calc((100% - 12px) / 2);
+    grid-auto-columns: calc((100% - 10px) / 2);
     grid-template-columns: none;
-    gap: 12px;
+    gap: 10px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
@@ -385,13 +385,21 @@ time {
 
   .sample-image {
     height: auto;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1.18 / 1;
   }
 
   .sample-info {
     grid-template-columns: 1fr;
-    gap: 5px;
-    padding: 12px;
+    gap: 4px;
+    padding: 9px 10px;
+  }
+
+  .sample-info strong {
+    font-size: 14px;
+  }
+
+  .sample-info span {
+    font-size: 12px;
   }
 
   .sample-info p {
@@ -401,7 +409,7 @@ time {
   .info-grid {
     grid-template-columns: 1fr;
     grid-auto-rows: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 
   .notice-card {
@@ -409,7 +417,7 @@ time {
   }
 
   .section-title h2 {
-    font-size: 19px;
+    font-size: 18px;
   }
 
   .view-all-button {

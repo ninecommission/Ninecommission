@@ -769,14 +769,14 @@ a.commission-closed {
   }
 
   .layout {
-    gap: 12px;
+    gap: 10px;
     width: min(100% - 20px, 560px);
     margin: 10px auto;
   }
 
   .main-column,
   .side-column {
-    gap: 12px;
+    gap: 10px;
   }
 
   .side-column {
@@ -784,7 +784,7 @@ a.commission-closed {
   }
 
   .page-panel {
-    padding: 20px 16px;
+    padding: 18px 15px;
   }
 
   .unified-title-panel {
@@ -794,7 +794,7 @@ a.commission-closed {
   }
 
   .page-title h1 {
-    font-size: 24px;
+    font-size: 23px;
   }
 
   .profile-card,
@@ -854,7 +854,7 @@ a.commission-closed {
   }
 
   .profile-card:has(.side-menu).is-open {
-    width: min(240px, calc(100vw - 20px));
+    width: min(232px, calc(100vw - 20px));
     background: var(--panel);
     border: 1px solid rgba(38, 93, 214, 0.12);
     box-shadow: 0 22px 60px rgba(20, 48, 105, 0.3);
@@ -893,7 +893,7 @@ a.commission-closed {
   }
 
   .profile-card.is-open .mobile-sidebar-toggle {
-    margin-bottom: 7px;
+    margin-bottom: 6px;
   }
 
   .mobile-sidebar-toggle svg {
@@ -914,14 +914,14 @@ a.commission-closed {
   .profile-card:has(.side-menu) .side-menu {
     display: none;
     grid-template-columns: 1fr;
-    gap: 5px;
+    gap: 4px;
   }
 
   .profile-card:has(.side-menu) > .status-card {
     display: none;
     width: 100%;
-    margin-top: 5px;
-    padding: 10px 12px;
+    margin-top: 4px;
+    padding: 9px 11px;
     border-color: #d5e1ff;
     border-radius: 8px;
     background: #f6f9ff;
@@ -936,11 +936,16 @@ a.commission-closed {
   }
 
   .profile-card:has(.side-menu) > .status-card h2 {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .profile-card:has(.side-menu) > .status-card strong {
-    font-size: 18px;
+    margin-top: 6px;
+    font-size: 17px;
+  }
+
+  .profile-card:has(.side-menu) > .status-card .progress {
+    margin: 7px 0 8px;
   }
 
   .profile-card:has(.side-menu) > .status-card p {
@@ -951,9 +956,9 @@ a.commission-closed {
     display: grid;
     grid-template-columns: 28px 1fr;
     justify-content: initial;
-    min-height: 48px;
+    min-height: 44px;
     padding: 0 12px;
-    font-size: 14px;
+    font-size: 13px;
     white-space: nowrap;
   }
 
