@@ -74,9 +74,9 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
-  min-height: 50px;
-  padding: 10px 12px;
+  gap: 10px;
+  min-height: 42px;
+  padding: 7px 10px;
   border: 1px solid #c9d7fb;
   border-radius: 8px;
   background: white;
@@ -90,22 +90,22 @@
 
 .type-stepper {
   display: grid;
-  grid-template-columns: 36px 54px 36px;
+  grid-template-columns: 30px 44px 30px;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .type-stepper button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border: 1px solid #c9d7fb;
   border-radius: 8px;
   color: var(--blue);
   font: inherit;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 900;
   line-height: 1;
   background: #f6f9ff;
@@ -118,8 +118,8 @@
 }
 
 .type-stepper input {
-  height: 36px;
-  min-height: 36px;
+  height: 30px;
+  min-height: 30px;
   padding: 0 4px;
   text-align: center;
   font-weight: 900;
@@ -218,6 +218,12 @@
   .commission-apply-form textarea {
     min-height: 48px;
     font-size: 16px;
+  }
+
+  .type-stepper button,
+  .type-stepper input {
+    height: 32px;
+    min-height: 32px;
   }
 
   .upload-box {
