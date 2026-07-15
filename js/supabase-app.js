@@ -475,7 +475,7 @@
     list.innerHTML = items.map((item) => {
       const date = item.created_at ? new Date(item.created_at).toLocaleDateString("ko-KR") : "-";
       const status = statusLabels[item.status] || item.status || "-";
-      return `<article class="request-history-item"><div><h3>${escapeHtml(item.request_code || "-")}</h3><p>${escapeHtml(item.request_type || "-")} · ${date}</p></div><span class="request-history-status">${escapeHtml(status)}</span></article>`;
+      return `<article class="request-history-item"><div><h3>${escapeHtml(item.request_type || "-")}</h3><p>${date}</p></div><span class="request-history-status">${escapeHtml(status)}</span></article>`;
     }).join("");
   }
 
