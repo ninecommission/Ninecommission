@@ -309,6 +309,8 @@ time {
   align-items: center;
   gap: 20px;
   min-height: 150px;
+  color: inherit;
+  text-decoration: none;
   background: #edf5ff;
 }
 
@@ -341,11 +343,6 @@ time {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
-}
-
-.apply-card h2:empty,
-.apply-card p:empty {
-  display: none;
 }
 
 @media (max-width: 760px) {
