@@ -664,6 +664,76 @@ a.commission-closed {
   background: var(--blue);
 }
 
+@media (min-width: 1081px) {
+  .side-column {
+    gap: 10px;
+  }
+
+  .profile-card,
+  .contact-card {
+    padding: 18px;
+  }
+
+  .profile-card {
+    padding-bottom: 20px;
+  }
+
+  .status-card {
+    padding: 13px 15px;
+  }
+
+  .avatar {
+    width: 58px;
+    height: 58px;
+  }
+
+  .profile-top {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .profile-top h2 {
+    font-size: 19px;
+  }
+
+  .side-menu {
+    gap: 6px;
+  }
+
+  .side-menu a {
+    min-height: 38px;
+    padding: 8px 12px;
+  }
+
+  .status-card strong {
+    margin-top: 7px;
+    font-size: 20px;
+  }
+
+  .progress {
+    margin: 8px 0 9px;
+  }
+
+  .contact-card {
+    gap: 8px;
+  }
+
+  .contact-links {
+    gap: 10px;
+    margin-bottom: 3px;
+  }
+
+  .contact-links a {
+    width: 40px;
+    height: 40px;
+  }
+
+  .primary-button,
+  .secondary-button {
+    min-height: 42px;
+  }
+}
+
 @media (max-width: 1080px) {
   .layout {
     grid-template-columns: 1fr;
