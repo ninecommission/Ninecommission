@@ -25,6 +25,29 @@
   gap: 12px;
 }
 
+.commission-apply-form .form-status {
+  order: -1;
+  margin: 0 0 8px;
+  padding: 18px 20px;
+  border: 1px solid #9ee2bf;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.55;
+}
+
+.commission-apply-form .form-status code {
+  min-height: 36px;
+  margin-left: 8px;
+  padding: 4px 12px;
+  border-width: 2px;
+  border-radius: 8px;
+  color: #0d5132;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  background: white;
+}
+
 .commission-apply-form label {
   display: grid;
   gap: 8px;
@@ -211,6 +234,18 @@
 
   .commission-apply-form {
     gap: 14px;
+  }
+
+  .commission-apply-form .form-status {
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  .commission-apply-form .form-status code {
+    display: flex;
+    width: fit-content;
+    margin: 8px 0 0;
+    font-size: 17px;
   }
 
   .commission-apply-form input,

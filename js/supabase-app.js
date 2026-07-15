@@ -55,11 +55,12 @@
       status = document.createElement("p");
       status.dataset.formStatus = "";
       status.className = "form-status";
-      form.appendChild(status);
+      placeStatusElement(form, status);
     }
 
     status.textContent = message;
     status.dataset.type = type;
+    return status;
   }
 
   function setStatusWithCode(form, beforeText, codeText, type) {
@@ -69,7 +70,7 @@
       status = document.createElement("p");
       status.dataset.formStatus = "";
       status.className = "form-status";
-      form.appendChild(status);
+      placeStatusElement(form, status);
     }
 
     status.textContent = beforeText;
@@ -79,6 +80,23 @@
       status.append(" ", code);
     }
     status.dataset.type = type;
+    return status;
+  }
+
+  function placeStatusElement(form, status) {
+    if (form.matches("[data-supabase-form='commission']")) {
+      form.prepend(status);
+      return;
+    }
+
+    form.appendChild(status);
+  }
+
+  function revealStatus(status) {
+    if (!status) return;
+    status.setAttribute("tabindex", "-1");
+    status.scrollIntoView({ behavior: "smooth", block: "center" });
+    status.focus({ preventScroll: true });
   }
 
   function applyCommissionAvailability(slotStatus) {
@@ -418,11 +436,13 @@
       selectedReferenceFiles = [];
       if (referenceCount) referenceCount.textContent = emptyReferenceText;
       const requestNumber = formatRequestCode(data?.request_code);
+      let status;
       if (requestNumber) {
-        setStatusWithCode(form, "신청이 저장되었습니다. 신청 번호:", requestNumber, "success");
+        status = setStatusWithCode(form, "접수 완료되었습니다. 신청 코드:", requestNumber, "success");
       } else {
-        setStatus(form, "신청이 저장되었습니다.", "success");
+        status = setStatus(form, "접수 완료되었습니다.", "success");
       }
+      revealStatus(status);
       loadPublicState();
     });
   }
