@@ -455,6 +455,30 @@
     });
   }
 
+  async function loadPublicRequestStatuses() {
+    const list = document.querySelector("[data-public-request-statuses]");
+    const empty = document.querySelector("[data-public-request-statuses-empty]");
+    if (!list || !empty || !client) return;
+
+    const statusLabels = { received: "접수 완료", waiting: "입금 대기", progress: "진행 중", done: "완료" };
+    const { data, error } = await client.rpc("get_public_request_statuses");
+    if (error) {
+      list.innerHTML = "";
+      empty.hidden = false;
+      empty.textContent = "신청 내역 상태를 불러오려면 Supabase SQL 설정을 먼저 적용해 주세요.";
+      return;
+    }
+
+    const items = data || [];
+    empty.hidden = items.length > 0;
+    empty.textContent = "표시할 신청 내역이 없습니다.";
+    list.innerHTML = items.map((item) => {
+      const date = item.created_at ? new Date(item.created_at).toLocaleDateString("ko-KR") : "-";
+      const status = statusLabels[item.status] || item.status || "-";
+      return `<article class="request-history-item"><div><h3>${escapeHtml(item.request_code || "-")}</h3><p>${escapeHtml(item.request_type || "-")} · ${date}</p></div><span class="request-history-status">${escapeHtml(status)}</span></article>`;
+    }).join("");
+  }
+
   window.NineSupabase = {
     getClient,
     insert,
@@ -469,6 +493,7 @@
     setTimeout(loadCachedProfile, 0);
     bindApplyForm();
     bindStatusLookup();
+    loadPublicRequestStatuses();
     loadPublicState();
     loadPublicNotices();
     bindNoticeModal();

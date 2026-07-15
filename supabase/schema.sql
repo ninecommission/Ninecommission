@@ -351,6 +351,22 @@ $$;
 revoke all on function public.lookup_commission_status(text) from public;
 grant execute on function public.lookup_commission_status(text) to anon, authenticated;
 
+drop function if exists public.get_public_request_statuses();
+create function public.get_public_request_statuses()
+returns table (request_code text, request_type text, status text, created_at timestamptz)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select commission_requests.request_code, commission_requests.request_type, commission_requests.status, commission_requests.created_at
+  from public.commission_requests
+  order by commission_requests.created_at desc
+  limit 50
+$$;
+revoke all on function public.get_public_request_statuses() from public;
+grant execute on function public.get_public_request_statuses() to anon, authenticated;
+
 create or replace function public.increment_slot_on_request()
 returns trigger language plpgsql security definer set search_path = public
 as $$

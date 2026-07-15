@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>진행 상황 조회 | NINE Commission</title><link rel="stylesheet" href="css/styles.css?v=20260715-request-code" /><link rel="stylesheet" href="css/status.css?v=20260715-mobile-chat-header-14" /></head>
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>진행 상황 조회 | NINE Commission</title><link rel="stylesheet" href="css/styles.css?v=20260715-request-code" /><link rel="stylesheet" href="css/status.css?v=20260716-request-history" /></head>
 <body>
   <main class="layout">
     <section class="main-column">
@@ -18,6 +18,13 @@
           <div><span>신청일</span><strong data-status-result-date></strong></div>
         </article>
       </section>
+      <section class="page-panel request-history-panel">
+        <header class="request-history-head">
+          <h2 class="panel-heading">신청 내역 상태</h2>
+        </header>
+        <div class="request-history-list" data-public-request-statuses></div>
+        <p class="empty-request-history" data-public-request-statuses-empty>신청 내역을 불러오는 중입니다.</p>
+      </section>
     </section>
     <aside class="side-column">
       <section class="profile-card"><div class="profile-top"><div class="avatar"></div><div><h2>NINE</h2></div></div><nav class="side-menu" aria-label="주요 메뉴"><a href="index.html"><span><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span>홈</a><a href="gallery.html"><span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg></span>갤러리</a><a href="guide.html"><span><svg viewBox="0 0 24 24"><path d="M10.3 21a2 2 0 0 0 3.4 0"></path><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path></svg></span>커미션 안내</a><a href="notice.html"><span><svg viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 13z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg></span>공지사항</a><a href="apply.html"><span><svg viewBox="0 0 24 24"><path d="M9 5h6"></path><path d="M9 3h6v4H9z"></path><path d="M5 5h14v16H5z"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span>커미션 신청</a></nav></section>
@@ -27,7 +34,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/supabase-app.js?v=20260716-remove-contact"></script>
+  <script src="js/supabase-app.js?v=20260716-request-history"></script>
   <script src="chat.js?v=20260715-chat-clear-empty"></script>
 </body>
 </html>

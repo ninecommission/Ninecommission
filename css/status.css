@@ -75,7 +75,7 @@
 
 .status-lookup-form {
   display: grid;
-  grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 14px;
 }
@@ -139,9 +139,61 @@
   font-size: 16px;
 }
 
+.request-history-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.request-history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.request-history-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 15px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.request-history-item h3 {
+  margin: 0;
+  color: var(--blue);
+  font-size: 15px;
+}
+
+.request-history-item p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.request-history-status {
+  justify-self: end;
+  min-width: 76px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  background: var(--blue-soft);
+}
+
+.empty-request-history {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 @media (max-width: 760px) {
   .status-lookup-form,
-  .status-result {
+  .status-result,
+  .request-history-item {
     grid-template-columns: 1fr;
   }
 
@@ -157,5 +209,9 @@
 
   .status-lookup-form .primary-button {
     width: 100%;
+  }
+
+  .request-history-status {
+    justify-self: start;
   }
 }
