@@ -802,6 +802,24 @@ a.commission-closed {
     padding: 20px 18px;
   }
 
+  .contact-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .contact-card .contact-links {
+    grid-column: 1 / -1;
+    margin-bottom: 2px;
+  }
+
+  .contact-card .primary-button,
+  .contact-card .secondary-button {
+    min-height: 44px;
+    padding: 0 8px;
+    font-size: 13px;
+    text-align: center;
+  }
+
   .profile-top {
     gap: 13px;
     margin-bottom: 18px;
