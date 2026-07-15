@@ -207,6 +207,17 @@
   gap: 12px;
 }
 
+@media (min-width: 761px) {
+  .notice-head {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .notice-head .more-button {
+    grid-column: 2;
+  }
+}
+
 .notice-card h2 {
   display: inline-flex;
   align-items: center;
