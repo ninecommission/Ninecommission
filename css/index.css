@@ -362,6 +362,10 @@ time {
     height: 172px;
   }
 
+  .section-title {
+    margin-top: 8px;
+  }
+
   .sample-grid {
     display: grid;
     grid-auto-flow: column;
