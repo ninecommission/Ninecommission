@@ -75,6 +75,12 @@
   padding: 0 4px;
 }
 
+@media (min-width: 761px) {
+  .section-title {
+    margin-top: 44px;
+  }
+}
+
 .section-title h2 {
   display: inline-flex;
   align-items: center;
