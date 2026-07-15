@@ -347,6 +347,11 @@ time {
   line-height: 1.45;
 }
 
+.apply-card h2:empty,
+.apply-card p:empty {
+  display: none;
+}
+
 @media (max-width: 760px) {
   .hero {
     min-height: 190px;
