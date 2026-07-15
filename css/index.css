@@ -309,7 +309,7 @@ time {
   align-items: center;
   gap: 20px;
   min-height: 150px;
-  background: #edf5ff;
+  background: var(--panel);
 }
 
 .guide-card > p:not(.eyebrow),
@@ -379,23 +379,13 @@ time {
 
   .sample-grid {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: calc((100% - 10px) / 2);
-    grid-template-columns: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .sample-grid::-webkit-scrollbar {
-    display: none;
+    overflow-x: visible;
   }
 
   .sample-card {
-    scroll-snap-align: start;
+    min-width: 0;
   }
 
   .sample-image {
