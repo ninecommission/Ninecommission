@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>커미션 신청 | NINE Commission</title>
   <link rel="stylesheet" href="css/styles.css?v=20260715-request-code" />
-  <link rel="stylesheet" href="css/apply.css?v=20260716-type-quantity" />
+  <link rel="stylesheet" href="css/apply.css?v=20260716-upload-svg" />
 </head>
 <body>
   <main class="layout">
@@ -81,7 +81,11 @@
           </fieldset>
           <label class="upload-box">
             <input type="file" name="reference" accept="image/*" multiple />
-            <span aria-hidden="true">🖼️</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <circle cx="8.5" cy="10.5" r="1.5"></circle>
+              <path d="m21 15-5-5L5 19"></path>
+            </svg>
             <strong>참고 이미지 업로드</strong>
             <small data-reference-count>선택된 이미지 없음 · 여러 번 나누어 선택 가능</small>
           </label>

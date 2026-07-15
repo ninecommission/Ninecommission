@@ -148,10 +148,15 @@
   display: none;
 }
 
-.upload-box span {
+.upload-box svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   color: var(--blue);
-  font-size: 28px;
-  line-height: 1;
 }
 
 .upload-box strong {
