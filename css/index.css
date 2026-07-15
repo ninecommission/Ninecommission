@@ -1,8 +1,7 @@
 .hero,
 .sample-card,
 .notice-card,
-.guide-card,
-.apply-card {
+.guide-card {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
@@ -178,13 +177,12 @@
 
 .info-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 
 .notice-card,
-.guide-card,
-.apply-card {
+.guide-card {
   padding: 26px 24px;
 }
 
@@ -192,14 +190,12 @@
   padding: 24px 26px;
 }
 
-.guide-card,
-.apply-card {
+.guide-card {
   padding: 28px 30px;
 }
 
 .notice-card h2,
-.guide-card h2,
-.apply-card h2 {
+.guide-card h2 {
   margin: 0;
   font-size: 18px;
 }
@@ -302,8 +298,7 @@ time {
   background: white;
 }
 
-.guide-card,
-.apply-card {
+.guide-card {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -312,12 +307,7 @@ time {
   background: #edf5ff;
 }
 
-.apply-card {
-  background: #f8fbff;
-}
-
-.guide-card > p:not(.eyebrow),
-.apply-card > p:not(.eyebrow) {
+.guide-card > p:not(.eyebrow) {
   margin: 10px 0 20px;
   color: var(--muted);
   font-size: 14px;
@@ -339,17 +329,11 @@ time {
   stroke-width: 1.8;
 }
 
-.guide-card p,
-.apply-card p {
+.guide-card p {
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
-}
-
-.apply-card h2:empty,
-.apply-card p:empty {
-  display: none;
 }
 
 @media (max-width: 760px) {
@@ -415,7 +399,7 @@ time {
   }
 
   .info-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     grid-auto-rows: 1fr;
     gap: 10px;
   }
@@ -435,13 +419,11 @@ time {
   }
 
   .notice-card,
-  .guide-card,
-  .apply-card {
+  .guide-card {
     padding: 16px 12px;
   }
 
-  .guide-card,
-  .apply-card {
+  .guide-card {
     grid-template-columns: 1fr;
     justify-items: center;
     align-content: start;
@@ -460,13 +442,11 @@ time {
     height: 36px;
   }
 
-  .guide-card h2,
-  .apply-card h2 {
+  .guide-card h2 {
     font-size: 15px;
   }
 
-  .guide-card p,
-  .apply-card p {
+  .guide-card p {
     font-size: 12px;
     line-height: 1.35;
   }
