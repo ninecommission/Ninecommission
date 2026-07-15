@@ -132,6 +132,17 @@
   cursor: pointer;
 }
 
+.inquiry-list-group {
+  display: grid;
+  gap: 10px;
+}
+
+.inquiry-list-group h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+
 .my-inquiry-list {
   display: grid;
   gap: 12px;

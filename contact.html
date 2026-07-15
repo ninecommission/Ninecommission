@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>문의하기 | NINE Commission</title>
   <link rel="stylesheet" href="css/styles.css?v=20260715-request-code" />
-  <link rel="stylesheet" href="css/contact.css?v=20260716-inquiry-code-lookup" />
+  <link rel="stylesheet" href="css/contact.css?v=20260716-public-inquiries" />
 </head>
 <body>
   <main class="layout">
@@ -66,15 +66,23 @@
       </section>
       <section class="page-panel my-inquiries-panel" data-my-inquiries-panel>
         <header class="my-inquiries-head">
-          <h2 class="panel-heading">문의 내역 조회</h2>
+          <h2 class="panel-heading">문의 내역</h2>
           <form class="inquiry-lookup-form" data-inquiry-lookup-form>
             <input type="text" name="inquiry_code" placeholder="문의 코드" autocomplete="off" required />
             <input type="password" name="lock_key" placeholder="잠금 비밀번호" autocomplete="current-password" />
             <button type="submit">조회</button>
           </form>
         </header>
-        <div class="my-inquiry-list" data-my-inquiry-list></div>
-        <p class="empty-inquiries" data-my-inquiry-empty>문의 코드를 입력하면 문의 내역을 확인할 수 있습니다.</p>
+        <div class="inquiry-list-group">
+          <h3>공개 문의</h3>
+          <div class="my-inquiry-list" data-public-inquiry-list></div>
+          <p class="empty-inquiries" data-public-inquiry-empty>공개 문의가 없습니다.</p>
+        </div>
+        <div class="inquiry-list-group">
+          <h3>잠금 문의 조회 결과</h3>
+          <div class="my-inquiry-list" data-private-inquiry-result></div>
+          <p class="empty-inquiries" data-private-inquiry-empty>잠금 문의는 문의 코드와 비밀번호로 확인할 수 있습니다.</p>
+        </div>
       </section>
     </section>
     <aside class="side-column">
@@ -85,7 +93,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/supabase-app.js?v=20260716-inquiry-code-lookup"></script>
+  <script src="js/supabase-app.js?v=20260716-public-inquiries"></script>
   <script src="chat.js?v=20260715-chat-clear-empty"></script>
 </body>
 </html>
