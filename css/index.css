@@ -312,6 +312,10 @@ time {
   background: var(--panel);
 }
 
+.guide-card {
+  background: #edf5ff;
+}
+
 .guide-card > p:not(.eyebrow),
 .apply-card > p:not(.eyebrow) {
   margin: 10px 0 20px;
