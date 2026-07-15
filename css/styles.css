@@ -976,6 +976,10 @@ a.commission-closed {
     height: 36px;
   }
 
+  .profile-card:has(.side-menu) > .contact-card .primary-button {
+    display: none;
+  }
+
   .profile-card:has(.side-menu) > .contact-card .primary-button,
   .profile-card:has(.side-menu) > .contact-card .secondary-button {
     min-height: 38px;
