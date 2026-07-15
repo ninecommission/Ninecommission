@@ -671,25 +671,25 @@ a.commission-closed {
 
   .profile-card,
   .contact-card {
-    padding: 18px;
+    padding: 27px;
   }
 
   .profile-card {
-    padding-bottom: 20px;
+    padding-bottom: 29px;
   }
 
   .status-card {
-    padding: 13px 15px;
+    padding: 15px 17px;
   }
 
   .avatar {
-    width: 58px;
-    height: 58px;
+    width: 64px;
+    height: 64px;
   }
 
   .profile-top {
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 14px;
+    margin-bottom: 26px;
   }
 
   .profile-top h2 {
@@ -701,8 +701,22 @@ a.commission-closed {
   }
 
   .side-menu a {
-    min-height: 38px;
-    padding: 8px 12px;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 8px;
+    min-height: 45px;
+    padding: 11px 12px;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .side-menu span {
+    width: 20px;
+  }
+
+  .side-menu svg {
+    width: 17px;
+    height: 17px;
   }
 
   .status-card strong {
@@ -724,13 +738,13 @@ a.commission-closed {
   }
 
   .contact-links a {
-    width: 40px;
-    height: 40px;
+    width: 43px;
+    height: 43px;
   }
 
   .primary-button,
   .secondary-button {
-    min-height: 42px;
+    min-height: 49px;
   }
 }
 
