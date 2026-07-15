@@ -1,7 +1,8 @@
 .hero,
 .sample-card,
 .notice-card,
-.guide-card {
+.guide-card,
+.apply-card {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
@@ -182,7 +183,8 @@
 }
 
 .notice-card,
-.guide-card {
+.guide-card,
+.apply-card {
   padding: 26px 24px;
 }
 
@@ -190,12 +192,14 @@
   padding: 24px 26px;
 }
 
-.guide-card {
+.guide-card,
+.apply-card {
   padding: 28px 30px;
 }
 
 .notice-card h2,
-.guide-card h2 {
+.guide-card h2,
+.apply-card h2 {
   margin: 0;
   font-size: 18px;
 }
@@ -298,7 +302,8 @@ time {
   background: white;
 }
 
-.guide-card {
+.guide-card,
+.apply-card {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -307,7 +312,12 @@ time {
   background: #edf5ff;
 }
 
-.guide-card > p:not(.eyebrow) {
+.apply-card {
+  background: #f8fbff;
+}
+
+.guide-card > p:not(.eyebrow),
+.apply-card > p:not(.eyebrow) {
   margin: 10px 0 20px;
   color: var(--muted);
   font-size: 14px;
@@ -329,20 +339,16 @@ time {
   stroke-width: 1.8;
 }
 
-.guide-card p {
+.guide-card p,
+.apply-card p {
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
 }
 
-.guide-actions {
-  display: grid;
-  grid-template-columns: repeat(2, max-content);
-  gap: 8px;
-}
-
-.guide-actions a {
+.guide-card a,
+.apply-card a {
   width: fit-content;
   padding: 11px 18px;
   border: 1px solid #c9d7fb;
@@ -417,7 +423,7 @@ time {
   }
 
   .info-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: 1fr;
     gap: 10px;
   }
@@ -437,19 +443,19 @@ time {
   }
 
   .notice-card,
-  .guide-card {
-    padding: 20px 18px;
+  .guide-card,
+  .apply-card {
+    padding: 16px 12px;
   }
 
-  .guide-card {
-    grid-template-columns: 40px minmax(0, 1fr);
-    gap: 12px;
-  }
-
-  .guide-actions {
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .guide-card,
+  .apply-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    align-content: start;
     gap: 8px;
+    min-height: 150px;
+    text-align: center;
   }
 
   .guide-icon {
@@ -462,7 +468,19 @@ time {
     height: 36px;
   }
 
-  .guide-actions a {
+  .guide-card h2,
+  .apply-card h2 {
+    font-size: 15px;
+  }
+
+  .guide-card p,
+  .apply-card p {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .guide-card a,
+  .apply-card a {
     width: auto;
     padding: 9px 13px;
     text-align: center;
