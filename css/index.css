@@ -437,26 +437,26 @@ time {
 
   .notice-card,
   .guide-card {
-    padding: 16px 12px;
+    padding: 12px 12px;
   }
 
   .guide-card {
     grid-template-columns: 1fr;
     justify-items: center;
     align-content: start;
-    gap: 8px;
-    min-height: 150px;
+    gap: 6px;
+    min-height: 112px;
     text-align: center;
   }
 
   .guide-icon {
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
   }
 
   .guide-icon svg {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
 
   .guide-card h2 {
@@ -470,9 +470,9 @@ time {
 
   .card-link-button {
     justify-self: center;
-    min-height: 34px;
-    padding: 0 14px;
-    font-size: 13px;
+    min-height: 30px;
+    padding: 0 12px;
+    font-size: 12px;
   }
 
 }
