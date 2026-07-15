@@ -475,7 +475,7 @@
 
       const { data, error } = await createCommissionRequest({
         name: values.name || "",
-        email: values.email || "",
+        email: values.contact || values.email || "",
         contact: values.contact || "",
         request_type: requestTypeSummary,
         people: values.people || "",
@@ -539,7 +539,7 @@
 
       const { data, error } = await createInquiry({
         name: values.name || "",
-        contact: values.contact || values.email || "",
+        contact: "",
         message: values.message || "",
         owner_key: getInquiryOwnerKey(),
         locked,
@@ -609,14 +609,14 @@
     const canView = item.can_view !== false;
     const locked = Boolean(item.locked);
     const displayCode = item.inquiry_code || code;
-    list.innerHTML = renderInquiryCard({ ...item, inquiry_code: displayCode }, { showContact: canView });
+    list.innerHTML = renderInquiryCard({ ...item, inquiry_code: displayCode });
   }
 
   function renderInquiryCard(item, options = {}) {
     const canView = item.can_view !== false;
     const locked = Boolean(item.locked);
     const code = item.inquiry_code || "문의";
-    return `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(code)}</h3><small>${locked ? "잠금 문의" : "공개 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "잠금 비밀번호를 입력하면 문의 내용을 볼 수 있습니다."}</p>${options.showContact && canView ? `<small>연락처: ${escapeHtml(item.contact || "-")}</small>` : ""}</article>`;
+    return `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(code)}</h3><small>${locked ? "잠금 문의" : "공개 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "잠금 비밀번호를 입력하면 문의 내용을 볼 수 있습니다."}</p></article>`;
   }
 
   async function loadPublicInquiries() {
@@ -635,7 +635,7 @@
     const items = data || [];
     empty.hidden = items.length > 0;
     empty.textContent = "공개 문의가 없습니다.";
-    list.innerHTML = items.map((item) => renderInquiryCard(item, { showContact: false })).join("");
+    list.innerHTML = items.map((item) => renderInquiryCard(item)).join("");
   }
 
   function bindStatusLookup() {
@@ -653,11 +653,10 @@
       const values = getFormData(form);
       const { data, error } = await client.rpc("lookup_commission_status", {
         p_request_code: values.request_id || "",
-        p_email: values.email || "",
       });
       if (error) { message.textContent = "조회하지 못했습니다. 잠시 후 다시 시도해주세요."; return; }
       const item = Array.isArray(data) ? data[0] : data;
-      if (!item) { message.textContent = "일치하는 신청을 찾지 못했습니다. 신청 번호와 이메일을 확인해주세요."; return; }
+      if (!item) { message.textContent = "일치하는 신청을 찾지 못했습니다. 신청 번호를 확인해주세요."; return; }
       document.querySelector("[data-status-result-id]").textContent = item.request_code || item.request_id || "-";
       document.querySelector("[data-status-result-type]").textContent = item.request_type || "-";
       document.querySelector("[data-status-result-status]").textContent = statusLabels[item.status] || item.status || "-";

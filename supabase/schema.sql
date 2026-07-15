@@ -543,7 +543,8 @@ grant execute on function public.get_public_site_state() to anon, authenticated;
 
 drop function if exists public.lookup_commission_status(bigint, text);
 drop function if exists public.lookup_commission_status(text, text);
-create function public.lookup_commission_status(p_request_code text, p_email text)
+drop function if exists public.lookup_commission_status(text);
+create function public.lookup_commission_status(p_request_code text)
 returns table (request_code text, request_type text, status text, created_at timestamptz)
 language sql
 security definer
@@ -553,11 +554,10 @@ as $$
   select commission_requests.request_code, commission_requests.request_type, commission_requests.status, commission_requests.created_at
   from public.commission_requests
   where lower(trim(request_code)) = lower(trim(p_request_code))
-    and lower(trim(email)) = lower(trim(p_email))
   limit 1
 $$;
-revoke all on function public.lookup_commission_status(text, text) from public;
-grant execute on function public.lookup_commission_status(text, text) to anon, authenticated;
+revoke all on function public.lookup_commission_status(text) from public;
+grant execute on function public.lookup_commission_status(text) to anon, authenticated;
 
 create or replace function public.increment_slot_on_request()
 returns trigger language plpgsql security definer set search_path = public
