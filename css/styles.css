@@ -917,8 +917,30 @@ a.commission-closed {
     gap: 5px;
   }
 
+  .profile-card:has(.side-menu) > .status-card {
+    display: none;
+    margin-top: 8px;
+    padding: 12px;
+  }
+
   .profile-card:has(.side-menu).is-open .side-menu {
     display: grid;
+  }
+
+  .profile-card:has(.side-menu).is-open > .status-card {
+    display: block;
+  }
+
+  .profile-card:has(.side-menu) > .status-card h2 {
+    font-size: 14px;
+  }
+
+  .profile-card:has(.side-menu) > .status-card strong {
+    font-size: 18px;
+  }
+
+  .profile-card:has(.side-menu) > .status-card p {
+    font-size: 12px;
   }
 
   .profile-card:has(.side-menu).is-open .side-menu a {

@@ -19,6 +19,10 @@
   function bindMobileSidebar() {
     const sidebar = document.querySelector(".profile-card:has(.side-menu)");
     if (!sidebar || sidebar.querySelector("[data-mobile-sidebar-toggle]")) return;
+    const sideColumn = sidebar.closest(".side-column");
+    const statusCard = sideColumn?.querySelector(":scope > .status-card");
+    const statusPlaceholder = document.createComment("mobile status card position");
+    const mobileQuery = window.matchMedia("(max-width: 760px)");
 
     const button = document.createElement("button");
     button.type = "button";
@@ -35,6 +39,18 @@
       button.setAttribute("aria-label", open ? "메뉴 접기" : "메뉴 펼치기");
     };
 
+    const syncStatusCard = () => {
+      if (!statusCard || !sideColumn) return;
+
+      if (mobileQuery.matches) {
+        if (!statusPlaceholder.parentNode) statusCard.before(statusPlaceholder);
+        if (statusCard.parentNode !== sidebar) sidebar.append(statusCard);
+        return;
+      }
+
+      if (statusPlaceholder.parentNode) statusPlaceholder.replaceWith(statusCard);
+    };
+
     button.addEventListener("click", () => setOpen(!sidebar.classList.contains("is-open")));
     document.addEventListener("click", (event) => {
       if (sidebar.classList.contains("is-open") && !sidebar.contains(event.target)) setOpen(false);
@@ -42,6 +58,8 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") setOpen(false);
     });
+    mobileQuery.addEventListener?.("change", syncStatusCard);
+    syncStatusCard();
   }
 
   function getFormData(form) {
