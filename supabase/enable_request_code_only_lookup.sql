@@ -1,3 +1,45 @@
+alter table public.commission_requests
+add column if not exists request_code text;
+
+create or replace function public.generate_commission_request_code()
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_chars text := 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+  v_code text;
+  v_index integer;
+begin
+  loop
+    v_code := 'C';
+    for v_index in 1..6 loop
+      v_code := v_code || substr(v_chars, floor(random() * length(v_chars) + 1)::integer, 1);
+    end loop;
+
+    exit when not exists (
+      select 1 from public.commission_requests where request_code = v_code
+    );
+  end loop;
+
+  return v_code;
+end;
+$$;
+
+update public.commission_requests
+set request_code = public.generate_commission_request_code()
+where request_code is null or request_code = '';
+
+alter table public.commission_requests
+alter column request_code set default public.generate_commission_request_code();
+
+alter table public.commission_requests
+alter column request_code set not null;
+
+create unique index if not exists commission_requests_request_code_key
+on public.commission_requests (request_code);
+
 drop function if exists public.lookup_commission_status(bigint, text);
 drop function if exists public.lookup_commission_status(text, text);
 drop function if exists public.lookup_commission_status(text);
