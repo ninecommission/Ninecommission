@@ -7,11 +7,9 @@
 
   async function loadDashboardPanels(client) {
     const noticeList = document.querySelector("[data-admin-notices]");
-    const inquiryList = document.querySelector("[data-admin-inquiries]");
     const chatList = document.querySelector("[data-admin-chats]");
-    const [{ data: notices }, { data: inquiries }, { data: chats }] = await Promise.all([
+    const [{ data: notices }, { data: chats }] = await Promise.all([
       client.from("notices").select("title,published,created_at").order("created_at", { ascending: false }).limit(3),
-      client.from("inquiries").select("name,message,created_at").order("created_at", { ascending: false }).limit(3),
       client.from("chat_messages").select("sender,message,created_at").not("sender", "like", "ADMIN:%").order("created_at", { ascending: false }).limit(3),
     ]);
 
@@ -19,11 +17,6 @@
       noticeList.innerHTML = notices?.length
         ? notices.map((item) => `<li><span><strong>${escapeHtml(item.title || "제목 없음")}</strong><small>${item.published ? "게시 중" : "비공개"}</small></span><time>${new Date(item.created_at).toLocaleDateString("ko-KR")}</time></li>`).join("")
         : "<li><span>등록된 공지가 없습니다.</span></li>";
-    }
-    if (inquiryList) {
-      inquiryList.innerHTML = inquiries?.length
-        ? inquiries.map((item) => `<li><span><strong>${escapeHtml(item.name || "이름 없음")}</strong><small>${escapeHtml(item.message || "내용 없음")}</small></span><time>${new Date(item.created_at).toLocaleDateString("ko-KR")}</time></li>`).join("")
-        : "<li><span>접수된 문의가 없습니다.</span></li>";
     }
     if (chatList) {
       chatList.innerHTML = chats?.length
@@ -92,7 +85,6 @@
     client
       .channel("admin-dashboard-panels")
       .on("postgres_changes", { event: "*", schema: "public", table: "notices" }, () => loadDashboardPanels(client))
-      .on("postgres_changes", { event: "*", schema: "public", table: "inquiries" }, () => loadDashboardPanels(client))
       .on("postgres_changes", { event: "*", schema: "public", table: "chat_messages" }, () => loadDashboardPanels(client))
       .subscribe();
   }

@@ -156,14 +156,6 @@
     const clear = document.querySelector("[data-clear-chats]"); if (clear) clear.disabled = !data?.length;
   }
 
-  async function loadInquiries() {
-    const list = document.querySelector("[data-inquiry-list]"); if (!list) return;
-    const { data, error } = await client.from("inquiries").select("id,created_at,name,contact,message,inquiry_code,locked").order("created_at", { ascending: false });
-    if (error) return toast("문의를 불러오지 못했습니다.");
-    list.innerHTML = (data || []).map((item) => `<article class="inquiry-manage-item" data-filter-row><div><h3>${esc(item.name || "이름 없음")}</h3><p>${esc(item.message)}</p><div class="inquiry-manage-meta"><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>연락처 ${esc(item.contact || "-")}</span><span>코드 ${esc(item.inquiry_code || "-")}</span>${item.locked ? "<span>잠금</span>" : ""}</div></div><button class="admin-button danger" data-inquiry-delete="${item.id}">삭제</button></article>`).join("");
-    const empty = document.querySelector("[data-inquiry-empty]"); if (empty) empty.hidden = Boolean(data?.length);
-    const clear = document.querySelector("[data-clear-inquiries]"); if (clear) clear.disabled = !data?.length;
-  }
 
   document.querySelector(".page-header .primary")?.addEventListener("click", () => {
     if (page === "requests") modal("신청 등록", '<div class="field"><label>이름</label><input name="name" required></div><div class="field"><label>연락처</label><input name="contact"></div><div class="field"><label>신청 타입</label><input name="request_type" required></div><div class="field"><label>참고 이미지</label><input name="reference" type="file" accept="image/*" multiple></div><div class="field"><label>내용</label><textarea name="message"></textarea></div>', "등록", async (data) => { const referencePaths = []; for (const file of data.getAll("reference").filter((item) => item.size)) { const path = `${Date.now()}-${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`; const uploaded = await client.storage.from("request-files").upload(path, file); if (uploaded.error) throw uploaded.error; referencePaths.push(path); } const payload = { name: data.get("name"), contact: data.get("contact"), request_type: data.get("request_type"), message: data.get("message"), reference_paths: referencePaths, status: "received" }; const { error } = await client.from("commission_requests").insert(payload); if (error) throw error; await log("신청 등록", payload.name); await loadRequests(); toast("신청을 등록했습니다."); });
@@ -178,7 +170,6 @@
     const logId = event.target.closest("[data-log-delete]")?.dataset.logDelete;
     const chatId = event.target.closest("[data-chat-delete]")?.dataset.chatDelete;
     const chatClearButton = event.target.closest("[data-chat-clear-thread]");
-    const inquiryId = event.target.closest("[data-inquiry-delete]")?.dataset.inquiryDelete;
     const requestImagesId = event.target.closest("[data-request-images]")?.dataset.requestImages;
     if (requestId) {
       if (!window.confirm(`신청 #${requestId}을(를) 삭제할까요? 삭제한 신청은 복구할 수 없습니다.`)) return;
@@ -235,14 +226,6 @@
       await loadChats();
       toast("채팅 기록을 지웠습니다.");
     }
-    if (inquiryId) {
-      if (!window.confirm("이 문의를 삭제할까요?")) return;
-      const { error } = await client.from("inquiries").delete().eq("id", inquiryId);
-      if (error) return toast("문의를 삭제하지 못했습니다.");
-      await log("문의 삭제", `#${inquiryId}`);
-      await loadInquiries();
-      toast("문의를 삭제했습니다.");
-    }
     if (requestImagesId) await showRequestImages(requestImagesId);
   });
 
@@ -285,14 +268,6 @@
     toast("전체 채팅 문의를 삭제했습니다.");
   });
 
-  document.querySelector("[data-clear-inquiries]")?.addEventListener("click", async () => {
-    if (!window.confirm("전체 문의를 삭제할까요? 삭제한 문의는 복구할 수 없습니다.")) return;
-    const { error } = await client.from("inquiries").delete().gte("id", 0);
-    if (error) return toast("전체 문의를 삭제하지 못했습니다.");
-    await log("전체 문의 삭제", "문의 전체 삭제");
-    await loadInquiries();
-    toast("전체 문의를 삭제했습니다.");
-  });
 
   document.addEventListener("change", async (event) => {
     const requestId = event.target.dataset.requestStatus;
@@ -437,5 +412,4 @@
   if (page === "settings" || page === "slots") loadSettings();
   if (page === "logs") loadLogs();
   if (page === "chats") loadChats();
-  if (page === "inquiries") loadInquiries();
 })();

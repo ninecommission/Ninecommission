@@ -53,11 +53,6 @@
 .chat-reply-form { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; margin-top: 14px; }
 .chat-reply-form input { min-width: 0; min-height: 40px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font: inherit; background: #fff; }
 .chat-reply-form input:focus { border-color: var(--blue); outline: none; }
-.inquiry-manage-list { display: grid; gap: 12px; }
-.inquiry-manage-item { display: grid; grid-template-columns: 1fr auto; gap: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
-.inquiry-manage-item h3 { margin: 0 0 8px; font-size: 16px; }
-.inquiry-manage-item p { margin: 0 0 12px; color: var(--ink); line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
-.inquiry-manage-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; color: var(--muted); font-size: 12px; }
 .request-status-select { min-height: 34px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: #fff; }
 .gallery-manage { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 .gallery-tile { overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
@@ -85,7 +80,7 @@
 .toast { position: fixed; right: 28px; bottom: 28px; padding: 14px 20px; border-radius: 8px; color: white; background: #10213f; box-shadow: 0 12px 30px rgba(0,0,0,.2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: .2s; }
 .toast.show { opacity: 1; transform: translateY(0); }
 @media (max-width: 1100px) { .admin-page { margin-left: 0; } .gallery-manage { grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 700px) { .admin-page { padding: 22px 14px; } .page-header { align-items: flex-start; flex-direction: column; } .settings-grid, .gallery-manage { grid-template-columns: 1fr; } .chat-manage-item, .inquiry-manage-item { grid-template-columns: 1fr; } .content-card { overflow-x: auto; padding: 14px; } }
+@media (max-width: 700px) { .admin-page { padding: 22px 14px; } .page-header { align-items: flex-start; flex-direction: column; } .settings-grid, .gallery-manage { grid-template-columns: 1fr; } .chat-manage-item { grid-template-columns: 1fr; } .content-card { overflow-x: auto; padding: 14px; } }
 .login-page { display: grid; min-height: 100vh; place-items: center; padding: 20px; background: var(--bg); }
 .login-card { width: min(420px, 100%); padding: 36px; border: 1px solid var(--line); border-radius: 14px; background: white; box-shadow: 0 18px 50px rgba(35,58,105,.12); }
 .login-card h1 { margin: 0; }.login-card > p { color: var(--muted); }.login-card .admin-button { width: 100%; }.login-status { min-height: 24px; color: #c93535; }
@@ -156,8 +151,7 @@ body[data-admin-page].admin-authenticated { visibility: visible; }
 
   .notice-item,
   .log-item,
-  .chat-manage-item,
-  .inquiry-manage-item {
+  .chat-manage-item {
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 15px;
@@ -165,8 +159,7 @@ body[data-admin-page].admin-authenticated { visibility: visible; }
 
   .notice-item .admin-button,
   .log-item .admin-button,
-  .chat-manage-item .admin-button,
-  .inquiry-manage-item .admin-button {
+  .chat-manage-item .admin-button {
     width: 100%;
   }
 

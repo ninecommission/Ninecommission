@@ -11,7 +11,6 @@
 
   const client = isReady ? window.supabase.createClient(config.url, config.anonKey) : null;
   let currentSlotStatus = "";
-  const INQUIRY_OWNER_KEY = "nine-inquiry-owner-key";
 
   function getClient() {
     return client;
@@ -111,80 +110,6 @@
     }
 
     return client.from(table).insert(payload);
-  }
-
-  function readStorage(key) {
-    try {
-      return localStorage.getItem(key);
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function writeStorage(key, value) {
-    try {
-      localStorage.setItem(key, value);
-    } catch (error) {}
-  }
-
-  function getInquiryOwnerKey() {
-    const savedKey = readStorage(INQUIRY_OWNER_KEY);
-    if (savedKey && /^[A-Za-z0-9-]{12,}$/.test(savedKey)) return savedKey;
-    const nextKey = `I-${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
-    writeStorage(INQUIRY_OWNER_KEY, nextKey);
-    return nextKey;
-  }
-
-  function formatDateTime(value) {
-    if (!value) return "-";
-    return new Date(value).toLocaleString("ko-KR");
-  }
-
-  async function createInquiry(payload) {
-    if (!client) {
-      return { data: null, error: new Error("Supabase is not configured.") };
-    }
-
-    const rpcResult = await client.rpc("create_inquiry", {
-      p_name: payload.name,
-      p_contact: payload.contact,
-      p_message: payload.message,
-      p_owner_key: payload.owner_key,
-      p_locked: payload.locked,
-      p_lock_key: "",
-    });
-
-    if (!rpcResult.error) {
-      return { data: { inquiry_code: rpcResult.data }, error: null };
-    }
-
-    if (!/create_inquiry|schema cache|function/i.test(rpcResult.error.message || "")) {
-      return rpcResult;
-    }
-
-    return insert("inquiries", {
-      name: payload.name,
-      contact: payload.contact,
-      message: payload.message,
-    });
-  }
-
-  async function fetchInquiryByCode(inquiryCode) {
-    if (!client) {
-      return { data: null, error: new Error("Supabase is not configured.") };
-    }
-
-    return client.rpc("get_inquiry_by_code", {
-      p_inquiry_code: inquiryCode,
-    });
-  }
-
-  async function fetchPublicInquiries() {
-    if (!client) {
-      return { data: [], error: new Error("Supabase is not configured.") };
-    }
-
-    return client.rpc("get_public_inquiries");
   }
 
   async function createCommissionRequest(payload) {
@@ -502,117 +427,6 @@
     });
   }
 
-  function bindInquiryForm() {
-    const form = document.querySelector("[data-supabase-form='inquiry']");
-    if (!form) {
-      return;
-    }
-    const lockToggle = form.querySelector("[data-inquiry-lock-toggle]");
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const values = getFormData(form);
-      const locked = Boolean(values.locked);
-
-      setStatus(form, "문의를 저장하는 중입니다.", "loading");
-
-      const { data, error } = await createInquiry({
-        name: values.name || "",
-        contact: "",
-        message: values.message || "",
-        owner_key: getInquiryOwnerKey(),
-        locked,
-      });
-
-      if (error) {
-        setStatus(form, "Supabase 설정을 확인해주세요. 문의가 저장되지 않았습니다.", "error");
-        return;
-      }
-
-      form.reset();
-      if (data?.inquiry_code) {
-        setStatusWithCode(form, "문의가 저장되었습니다. 문의 코드:", data.inquiry_code, "success");
-        const lookupForm = document.querySelector("[data-inquiry-lookup-form]");
-        const codeInput = lookupForm?.querySelector('input[name="inquiry_code"]');
-        if (codeInput) codeInput.value = data.inquiry_code;
-        if (locked) loadInquiryByCode(data.inquiry_code);
-        else loadPublicInquiries();
-      } else {
-        setStatus(form, "문의가 저장되었습니다.", "success");
-      }
-    });
-
-    document.querySelector("[data-inquiry-lookup-form]")?.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const values = getFormData(event.currentTarget);
-      loadInquiryByCode(values.inquiry_code || "");
-    });
-
-    loadPublicInquiries();
-  }
-
-  async function loadInquiryByCode(inquiryCode) {
-    const list = document.querySelector("[data-private-inquiry-result]");
-    const empty = document.querySelector("[data-private-inquiry-empty]");
-    if (!list || !empty || !client) return;
-
-    const code = String(inquiryCode || "").trim();
-    if (!code) {
-      list.innerHTML = "";
-      empty.hidden = false;
-      empty.textContent = "문의 코드를 입력하면 문의 내역을 확인할 수 있습니다.";
-      return;
-    }
-
-    const { data, error } = await fetchInquiryByCode(code);
-    if (error) {
-      list.innerHTML = "";
-      empty.hidden = false;
-      empty.textContent = "문의 내역을 불러오려면 Supabase SQL 설정을 먼저 적용해 주세요.";
-      return;
-    }
-
-    const item = Array.isArray(data) ? data[0] : data;
-    if (!item) {
-      list.innerHTML = "";
-      empty.hidden = false;
-      empty.textContent = "일치하는 문의 코드를 찾지 못했습니다.";
-      return;
-    }
-
-    empty.hidden = true;
-    const canView = item.can_view !== false;
-    const locked = Boolean(item.locked);
-    const displayCode = item.inquiry_code || code;
-    list.innerHTML = renderInquiryCard({ ...item, inquiry_code: displayCode });
-  }
-
-  function renderInquiryCard(item, options = {}) {
-    const canView = item.can_view !== false;
-    const locked = Boolean(item.locked);
-    const code = item.inquiry_code || "문의";
-    return `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(code)}</h3><small>${locked ? "잠금 문의" : "공개 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "문의 코드를 입력하면 내용을 볼 수 있습니다."}</p></article>`;
-  }
-
-  async function loadPublicInquiries() {
-    const list = document.querySelector("[data-public-inquiry-list]");
-    const empty = document.querySelector("[data-public-inquiry-empty]");
-    if (!list || !empty || !client) return;
-
-    const { data, error } = await fetchPublicInquiries();
-    if (error) {
-      list.innerHTML = "";
-      empty.hidden = false;
-      empty.textContent = "공개 문의를 불러오려면 Supabase SQL 설정을 먼저 적용해 주세요.";
-      return;
-    }
-
-    const items = data || [];
-    empty.hidden = items.length > 0;
-    empty.textContent = "공개 문의가 없습니다.";
-    list.innerHTML = items.map((item) => renderInquiryCard(item)).join("");
-  }
-
   function bindStatusLookup() {
     const form = document.querySelector("[data-status-lookup-form]");
     if (!form) return;
@@ -654,7 +468,6 @@
     loadCachedProfile();
     setTimeout(loadCachedProfile, 0);
     bindApplyForm();
-    bindInquiryForm();
     bindStatusLookup();
     loadPublicState();
     loadPublicNotices();
