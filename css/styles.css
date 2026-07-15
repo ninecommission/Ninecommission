@@ -972,6 +972,11 @@ a.commission-closed {
     z-index: 120;
   }
 
+  .chat-widget.is-open .chat-fab {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .chat-fab {
     width: 54px;
     height: 54px;
@@ -979,7 +984,7 @@ a.commission-closed {
 
   .chat-panel {
     width: calc(100vw - 20px);
-    height: min(440px, calc(100dvh - 100px));
+    height: min(560px, calc(100dvh - 44px));
   }
 
   .chat-panel-head {
