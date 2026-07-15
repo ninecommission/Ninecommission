@@ -229,13 +229,15 @@
   }
 
   .apply-notice-box {
-    padding: 8px 14px;
-    gap: 5px;
+    gap: 3px;
+    margin-bottom: 10px;
+    padding: 6px 14px;
   }
 
   .apply-notice-box li {
+    margin-left: 16px;
     font-size: 13px;
-    line-height: 1.35;
+    line-height: 1.25;
   }
 
   .commission-apply-form {
