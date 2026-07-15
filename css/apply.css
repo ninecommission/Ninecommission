@@ -105,7 +105,7 @@
   background: white;
 }
 
-.type-quantity-row > span {
+.type-quantity-row>span {
   color: var(--ink);
   font-size: 14px;
   font-weight: 800;
@@ -229,7 +229,13 @@
   }
 
   .apply-notice-box {
-    padding: 14px;
+    padding: 10px 12px;
+    gap: 5px;
+  }
+
+  .apply-notice-box li {
+    font-size: 13px;
+    line-height: 1.35;
   }
 
   .commission-apply-form {
