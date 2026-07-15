@@ -1,5 +1,6 @@
 .inquiry-panel,
-.faq-panel {
+.faq-panel,
+.my-inquiries-panel {
   display: grid;
   gap: 18px;
 }
@@ -26,6 +27,26 @@
   color: var(--ink);
   background: #f8fbff;
   font: inherit;
+}
+
+.inquiry-lock-row {
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: center;
+  gap: 8px !important;
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+.inquiry-lock-row input {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+}
+
+.inquiry-lock-field[hidden] {
+  display: none;
 }
 
 .inquiry-form textarea {
@@ -74,6 +95,95 @@
   line-height: 1.6;
 }
 
+.my-inquiries-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.inquiry-unlock-form {
+  display: flex;
+  gap: 8px;
+}
+
+.inquiry-unlock-form input {
+  width: 180px;
+  min-height: 38px;
+  border: 1px solid #c9d7fb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  background: #f8fbff;
+}
+
+.inquiry-unlock-form button {
+  min-height: 38px;
+  border: 1px solid #c9d7fb;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--blue);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  background: white;
+  cursor: pointer;
+}
+
+.my-inquiry-list {
+  display: grid;
+  gap: 12px;
+}
+
+.my-inquiry-card {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 14px;
+  background: #f8fbff;
+}
+
+.my-inquiry-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.my-inquiry-card h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.my-inquiry-card time,
+.my-inquiry-card small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.my-inquiry-card p {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.my-inquiry-card.is-locked p {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.empty-inquiries {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 @media (max-width: 760px) {
   .inquiry-form input,
   .inquiry-form textarea {
@@ -82,6 +192,17 @@
   }
 
   .inquiry-form .primary-button {
+    width: 100%;
+  }
+
+  .my-inquiries-head,
+  .inquiry-unlock-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inquiry-unlock-form input,
+  .inquiry-unlock-form button {
     width: 100%;
   }
 }

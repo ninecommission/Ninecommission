@@ -158,9 +158,9 @@
 
   async function loadInquiries() {
     const list = document.querySelector("[data-inquiry-list]"); if (!list) return;
-    const { data, error } = await client.from("inquiries").select("id,created_at,name,contact,message").order("created_at", { ascending: false });
+    const { data, error } = await client.from("inquiries").select("id,created_at,name,contact,message,inquiry_code,locked").order("created_at", { ascending: false });
     if (error) return toast("문의를 불러오지 못했습니다.");
-    list.innerHTML = (data || []).map((item) => `<article class="inquiry-manage-item" data-filter-row><div><h3>${esc(item.name || "이름 없음")}</h3><p>${esc(item.message)}</p><div class="inquiry-manage-meta"><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>연락처: ${esc(item.contact || "-")}</span></div></div><button class="admin-button danger" data-inquiry-delete="${item.id}">삭제</button></article>`).join("");
+    list.innerHTML = (data || []).map((item) => `<article class="inquiry-manage-item" data-filter-row><div><h3>${esc(item.name || "이름 없음")}</h3><p>${esc(item.message)}</p><div class="inquiry-manage-meta"><span>${new Date(item.created_at).toLocaleString("ko-KR")}</span><span>연락처 ${esc(item.contact || "-")}</span><span>코드 ${esc(item.inquiry_code || "-")}</span>${item.locked ? "<span>잠금</span>" : ""}</div></div><button class="admin-button danger" data-inquiry-delete="${item.id}">삭제</button></article>`).join("");
     const empty = document.querySelector("[data-inquiry-empty]"); if (empty) empty.hidden = Boolean(data?.length);
     const clear = document.querySelector("[data-clear-inquiries]"); if (clear) clear.disabled = !data?.length;
   }

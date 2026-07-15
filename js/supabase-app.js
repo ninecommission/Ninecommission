@@ -11,6 +11,7 @@
 
   const client = isReady ? window.supabase.createClient(config.url, config.anonKey) : null;
   let currentSlotStatus = "";
+  const INQUIRY_OWNER_KEY = "nine-inquiry-owner-key";
 
   function getClient() {
     return client;
@@ -110,6 +111,73 @@
     }
 
     return client.from(table).insert(payload);
+  }
+
+  function readStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {}
+  }
+
+  function getInquiryOwnerKey() {
+    const savedKey = readStorage(INQUIRY_OWNER_KEY);
+    if (savedKey && /^[A-Za-z0-9-]{12,}$/.test(savedKey)) return savedKey;
+    const nextKey = `I-${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
+    writeStorage(INQUIRY_OWNER_KEY, nextKey);
+    return nextKey;
+  }
+
+  function formatDateTime(value) {
+    if (!value) return "-";
+    return new Date(value).toLocaleString("ko-KR");
+  }
+
+  async function createInquiry(payload) {
+    if (!client) {
+      return { data: null, error: new Error("Supabase is not configured.") };
+    }
+
+    const rpcResult = await client.rpc("create_inquiry", {
+      p_name: payload.name,
+      p_contact: payload.contact,
+      p_message: payload.message,
+      p_owner_key: payload.owner_key,
+      p_locked: payload.locked,
+      p_lock_key: payload.lock_key,
+    });
+
+    if (!rpcResult.error) {
+      return { data: { inquiry_code: rpcResult.data }, error: null };
+    }
+
+    if (!/create_inquiry|schema cache|function/i.test(rpcResult.error.message || "")) {
+      return rpcResult;
+    }
+
+    return insert("inquiries", {
+      name: payload.name,
+      contact: payload.contact,
+      message: payload.message,
+    });
+  }
+
+  async function fetchMyInquiries(lockKey = "") {
+    if (!client) {
+      return { data: [], error: new Error("Supabase is not configured.") };
+    }
+
+    return client.rpc("get_my_inquiries", {
+      p_owner_key: getInquiryOwnerKey(),
+      p_lock_key: lockKey,
+    });
   }
 
   async function createCommissionRequest(payload) {
@@ -432,17 +500,42 @@
     if (!form) {
       return;
     }
+    const lockToggle = form.querySelector("[data-inquiry-lock-toggle]");
+    const lockField = form.querySelector("[data-inquiry-lock-field]");
+    const lockInput = lockField?.querySelector("input");
+
+    const syncLockField = () => {
+      const locked = Boolean(lockToggle?.checked);
+      if (lockField) lockField.hidden = !locked;
+      if (lockInput) {
+        lockInput.required = locked;
+        if (!locked) lockInput.value = "";
+      }
+    };
+
+    lockToggle?.addEventListener("change", syncLockField);
+    syncLockField();
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const values = getFormData(form);
+      const locked = Boolean(values.locked);
+      const lockKey = values.lock_key || "";
+
+      if (locked && !lockKey.trim()) {
+        setStatus(form, "잠금 문의는 비밀번호를 입력해 주세요.", "error");
+        return;
+      }
 
       setStatus(form, "문의를 저장하는 중입니다.", "loading");
 
-      const { error } = await insert("inquiries", {
+      const { data, error } = await createInquiry({
         name: values.name || "",
         contact: values.contact || values.email || "",
         message: values.message || "",
+        owner_key: getInquiryOwnerKey(),
+        locked,
+        lock_key: lockKey,
       });
 
       if (error) {
@@ -451,8 +544,46 @@
       }
 
       form.reset();
-      setStatus(form, "문의가 저장되었습니다.", "success");
+      syncLockField();
+      if (data?.inquiry_code) {
+        setStatusWithCode(form, "문의가 저장되었습니다. 문의 코드:", data.inquiry_code, "success");
+      } else {
+        setStatus(form, "문의가 저장되었습니다.", "success");
+      }
+      loadMyInquiries(lockKey);
     });
+
+    document.querySelector("[data-inquiry-unlock-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const values = getFormData(event.currentTarget);
+      loadMyInquiries(values.lock_key || "");
+    });
+
+    loadMyInquiries();
+  }
+
+  async function loadMyInquiries(lockKey = "") {
+    const list = document.querySelector("[data-my-inquiry-list]");
+    const empty = document.querySelector("[data-my-inquiry-empty]");
+    if (!list || !empty || !client) return;
+
+    const { data, error } = await fetchMyInquiries(lockKey);
+    if (error) {
+      list.innerHTML = "";
+      empty.hidden = false;
+      empty.textContent = "문의 내역을 불러오려면 Supabase SQL 설정을 먼저 적용해 주세요.";
+      return;
+    }
+
+    const items = data || [];
+    empty.hidden = items.length > 0;
+    empty.textContent = "아직 이 브라우저에서 보낸 문의가 없습니다.";
+    list.innerHTML = items.map((item) => {
+      const canView = item.can_view !== false;
+      const locked = Boolean(item.locked);
+      const code = item.inquiry_code || "문의";
+      return `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(code)}</h3><small>${locked ? "잠금 문의" : "일반 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "잠금 비밀번호를 입력하면 문의 내용을 볼 수 있습니다."}</p>${canView ? `<small>연락처: ${escapeHtml(item.contact || "-")}</small>` : ""}</article>`;
+    }).join("");
   }
 
   function bindStatusLookup() {
