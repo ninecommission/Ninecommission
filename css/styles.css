@@ -984,7 +984,8 @@ a.commission-closed {
 
   .chat-panel {
     width: calc(100vw - 20px);
-    height: min(560px, calc(100dvh - 44px));
+    height: min(560px, calc(100dvh - 84px));
+    margin-bottom: -62px;
   }
 
   .chat-panel-head {
