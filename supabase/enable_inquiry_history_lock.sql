@@ -119,3 +119,37 @@ $$;
 
 revoke all on function public.get_my_inquiries(text, text) from public;
 grant execute on function public.get_my_inquiries(text, text) to anon, authenticated;
+
+create or replace function public.get_inquiry_by_code(
+  p_inquiry_code text,
+  p_lock_key text default ''
+)
+returns table (
+  inquiry_code text,
+  created_at timestamptz,
+  name text,
+  contact text,
+  message text,
+  locked boolean,
+  can_view boolean
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select
+    i.inquiry_code,
+    i.created_at,
+    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.name else '' end as name,
+    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.contact else '' end as contact,
+    case when not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex') then i.message else '' end as message,
+    i.locked,
+    (not i.locked or i.lock_key_hash = encode(digest(coalesce(p_lock_key, ''), 'sha256'), 'hex')) as can_view
+  from public.inquiries i
+  where upper(i.inquiry_code) = upper(trim(coalesce(p_inquiry_code, '')))
+  order by i.created_at desc
+  limit 1;
+$$;
+
+revoke all on function public.get_inquiry_by_code(text, text) from public;
+grant execute on function public.get_inquiry_by_code(text, text) to anon, authenticated;

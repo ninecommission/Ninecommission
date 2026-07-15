@@ -102,12 +102,12 @@
   gap: 16px;
 }
 
-.inquiry-unlock-form {
+.inquiry-lookup-form {
   display: flex;
   gap: 8px;
 }
 
-.inquiry-unlock-form input {
+.inquiry-lookup-form input {
   width: 180px;
   min-height: 38px;
   border: 1px solid #c9d7fb;
@@ -119,7 +119,7 @@
   background: #f8fbff;
 }
 
-.inquiry-unlock-form button {
+.inquiry-lookup-form button {
   min-height: 38px;
   border: 1px solid #c9d7fb;
   border-radius: 8px;
@@ -196,13 +196,13 @@
   }
 
   .my-inquiries-head,
-  .inquiry-unlock-form {
+  .inquiry-lookup-form {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .inquiry-unlock-form input,
-  .inquiry-unlock-form button {
+  .inquiry-lookup-form input,
+  .inquiry-lookup-form button {
     width: 100%;
   }
 }

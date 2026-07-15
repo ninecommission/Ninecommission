@@ -169,13 +169,13 @@
     });
   }
 
-  async function fetchMyInquiries(lockKey = "") {
+  async function fetchInquiryByCode(inquiryCode, lockKey = "") {
     if (!client) {
-      return { data: [], error: new Error("Supabase is not configured.") };
+      return { data: null, error: new Error("Supabase is not configured.") };
     }
 
-    return client.rpc("get_my_inquiries", {
-      p_owner_key: getInquiryOwnerKey(),
+    return client.rpc("get_inquiry_by_code", {
+      p_inquiry_code: inquiryCode,
       p_lock_key: lockKey,
     });
   }
@@ -547,27 +547,38 @@
       syncLockField();
       if (data?.inquiry_code) {
         setStatusWithCode(form, "문의가 저장되었습니다. 문의 코드:", data.inquiry_code, "success");
+        const lookupForm = document.querySelector("[data-inquiry-lookup-form]");
+        const codeInput = lookupForm?.querySelector('input[name="inquiry_code"]');
+        const lockInput = lookupForm?.querySelector('input[name="lock_key"]');
+        if (codeInput) codeInput.value = data.inquiry_code;
+        if (lockInput) lockInput.value = lockKey;
+        loadInquiryByCode(data.inquiry_code, lockKey);
       } else {
         setStatus(form, "문의가 저장되었습니다.", "success");
       }
-      loadMyInquiries(lockKey);
     });
 
-    document.querySelector("[data-inquiry-unlock-form]")?.addEventListener("submit", (event) => {
+    document.querySelector("[data-inquiry-lookup-form]")?.addEventListener("submit", (event) => {
       event.preventDefault();
       const values = getFormData(event.currentTarget);
-      loadMyInquiries(values.lock_key || "");
+      loadInquiryByCode(values.inquiry_code || "", values.lock_key || "");
     });
-
-    loadMyInquiries();
   }
 
-  async function loadMyInquiries(lockKey = "") {
+  async function loadInquiryByCode(inquiryCode, lockKey = "") {
     const list = document.querySelector("[data-my-inquiry-list]");
     const empty = document.querySelector("[data-my-inquiry-empty]");
     if (!list || !empty || !client) return;
 
-    const { data, error } = await fetchMyInquiries(lockKey);
+    const code = String(inquiryCode || "").trim();
+    if (!code) {
+      list.innerHTML = "";
+      empty.hidden = false;
+      empty.textContent = "문의 코드를 입력하면 문의 내역을 확인할 수 있습니다.";
+      return;
+    }
+
+    const { data, error } = await fetchInquiryByCode(code, lockKey);
     if (error) {
       list.innerHTML = "";
       empty.hidden = false;
@@ -575,15 +586,19 @@
       return;
     }
 
-    const items = data || [];
-    empty.hidden = items.length > 0;
-    empty.textContent = "아직 이 브라우저에서 보낸 문의가 없습니다.";
-    list.innerHTML = items.map((item) => {
-      const canView = item.can_view !== false;
-      const locked = Boolean(item.locked);
-      const code = item.inquiry_code || "문의";
-      return `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(code)}</h3><small>${locked ? "잠금 문의" : "일반 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "잠금 비밀번호를 입력하면 문의 내용을 볼 수 있습니다."}</p>${canView ? `<small>연락처: ${escapeHtml(item.contact || "-")}</small>` : ""}</article>`;
-    }).join("");
+    const item = Array.isArray(data) ? data[0] : data;
+    if (!item) {
+      list.innerHTML = "";
+      empty.hidden = false;
+      empty.textContent = "일치하는 문의 코드를 찾지 못했습니다.";
+      return;
+    }
+
+    empty.hidden = true;
+    const canView = item.can_view !== false;
+    const locked = Boolean(item.locked);
+    const displayCode = item.inquiry_code || code;
+    list.innerHTML = `<article class="my-inquiry-card${locked && !canView ? " is-locked" : ""}" data-filter-row><header><div><h3>${escapeHtml(displayCode)}</h3><small>${locked ? "잠금 문의" : "일반 문의"}</small></div><time>${formatDateTime(item.created_at)}</time></header><p>${canView ? escapeHtml(item.message || "") : "잠금 비밀번호를 입력하면 문의 내용을 볼 수 있습니다."}</p>${canView ? `<small>연락처: ${escapeHtml(item.contact || "-")}</small>` : ""}</article>`;
   }
 
   function bindStatusLookup() {
