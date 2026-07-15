@@ -211,8 +211,8 @@
   .notice-card {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 10px 20px;
+    align-items: start;
+    gap: 4px 20px;
   }
 
   .notice-head {
@@ -233,6 +233,10 @@
   .notice-card ul {
     grid-column: 1;
     margin-top: 0;
+  }
+
+  .notice-card li {
+    align-items: flex-start;
   }
 }
 
