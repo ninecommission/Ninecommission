@@ -209,12 +209,13 @@
 
 @media (min-width: 761px) {
   .notice-head {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .notice-head .more-button {
-    grid-column: 2;
+    margin: 10px auto 0;
+    flex-basis: 100%;
   }
 }
 
