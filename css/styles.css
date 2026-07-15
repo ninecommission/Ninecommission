@@ -919,8 +919,12 @@ a.commission-closed {
 
   .profile-card:has(.side-menu) > .status-card {
     display: none;
-    margin-top: 8px;
-    padding: 12px;
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px 12px;
+    border-color: #d5e1ff;
+    border-radius: 8px;
+    background: #f6f9ff;
   }
 
   .profile-card:has(.side-menu).is-open .side-menu {
