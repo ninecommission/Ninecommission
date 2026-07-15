@@ -305,7 +305,7 @@ time {
 .guide-card,
 .apply-card {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 20px;
   min-height: 150px;
@@ -345,19 +345,6 @@ time {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
-}
-
-.guide-card a,
-.apply-card a {
-  width: fit-content;
-  padding: 11px 18px;
-  border: 1px solid #c9d7fb;
-  border-radius: 999px;
-  color: var(--blue);
-  font-size: 14px;
-  font-weight: 800;
-  background: white;
-  white-space: nowrap;
 }
 
 @media (max-width: 760px) {
@@ -479,11 +466,4 @@ time {
     line-height: 1.35;
   }
 
-  .guide-card a,
-  .apply-card a {
-    width: auto;
-    padding: 9px 13px;
-    text-align: center;
-    white-space: nowrap;
-  }
 }
