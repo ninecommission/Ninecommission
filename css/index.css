@@ -336,7 +336,13 @@ time {
   line-height: 1.45;
 }
 
-.guide-card a {
+.guide-actions {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 8px;
+}
+
+.guide-actions a {
   width: fit-content;
   padding: 11px 18px;
   border: 1px solid #c9d7fb;
@@ -436,8 +442,14 @@ time {
   }
 
   .guide-card {
-    grid-template-columns: 40px minmax(0, 1fr) auto;
+    grid-template-columns: 40px minmax(0, 1fr);
     gap: 12px;
+  }
+
+  .guide-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .guide-icon {
@@ -450,7 +462,7 @@ time {
     height: 36px;
   }
 
-  .guide-card a {
+  .guide-actions a {
     width: auto;
     padding: 9px 13px;
     text-align: center;
